@@ -1,0 +1,50 @@
+</main>
+
+<section id="contacto" class="footer-yamira text-white py-5">
+  <div class="container">
+    <div class="row g-4 align-items-start">
+      <div class="col-lg-4">
+        <img src="/img/logo-yamira.png" alt="Yamira Travel Tours" class="footer-logo mb-3">
+        <p class="text-white-60 mb-3">Transporte turístico y familiar desde Puente Piedra hacia Cajatambo y Uramasa. Reserva online, elige asiento y confirma tu viaje por WhatsApp.</p>
+        <div class="d-flex gap-2">
+          <a href="https://wa.me/<%= whatsappAdmin %>" target="_blank" class="social-pill" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+          <a href="#" class="social-pill" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-pill" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <h5 class="fw-bold mb-3 text-yamira-gold">Rutas y destinos</h5>
+        <ul class="list-unstyled text-white-60 footer-list">
+          <li><i class="bi bi-geo-alt me-2"></i>Puente Piedra → Cajatambo</li>
+          <li><i class="bi bi-geo-alt me-2"></i>Puente Piedra → Uramasa</li>
+          <li><i class="bi bi-mountain me-2"></i>Raura, Guñoc, Viconga y Cascada Escalón</li>
+          <li><i class="bi bi-bus-front me-2"></i>Salidas según programación</li>
+        </ul>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <h5 class="fw-bold mb-3 text-yamira-gold">Contáctanos</h5>
+        <ul class="list-unstyled text-white-60 footer-list">
+          <li><i class="bi bi-whatsapp me-2 text-success"></i>+<%= whatsappAdmin %></li>
+          <li><i class="bi bi-clock me-2"></i>Atención por WhatsApp</li>
+          <li><i class="bi bi-pin-map me-2"></i>Paradero Puente Piedra, Lima</li>
+        </ul>
+        <a href="https://wa.me/<%= whatsappAdmin %>?text=<%= encodeURIComponent('Hola Yamira Travel Tours, quiero información sobre viajes a Cajatambo o Uramasa') %>" target="_blank" class="btn btn-success rounded-pill fw-bold px-4">
+          <i class="bi bi-whatsapp me-2"></i>Escribir por WhatsApp
+        </a>
+      </div>
+    </div>
+    <hr class="border-secondary my-4">
+    <p class="text-center text-white-60 mb-0">&copy; 2026 Yamira Travel Tours. Todos los derechos reservados.</p>
+  </div>
+</section>
+
+<a href="https://wa.me/<%= whatsappAdmin %>?text=<%= encodeURIComponent('Hola Yamira Travel Tours, quiero reservar un viaje') %>" target="_blank" class="btn-flotante-wa" title="Escríbenos por WhatsApp" aria-label="Escribir por WhatsApp">
+  <i class="bi bi-whatsapp"></i>
+</a>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/landing.js"></script>
+</body>
+</html>

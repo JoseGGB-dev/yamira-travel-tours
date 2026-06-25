@@ -1,0 +1,81 @@
+<%- include('../partials/header') %>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+
+        <div class="card shadow-lg border-0 overflow-hidden">
+          <div class="card-header bg-success text-white py-4">
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+              <span class="rounded-circle bg-white text-success d-inline-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                <i class="bi bi-check-circle-fill fs-2"></i>
+              </span>
+              <div>
+                <h3 class="fw-bold mb-1">Pago confirmado</h3>
+                <p class="mb-0">La reserva ya quedó marcada como pagada.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body p-4">
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <div class="p-3 bg-light rounded-4 h-100">
+                  <p class="text-muted mb-1">Cliente</p>
+                  <h5 class="fw-bold mb-0"><%= reserva.nombre_cliente %></h5>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 bg-light rounded-4 h-100">
+                  <p class="text-muted mb-1">Celular</p>
+                  <h5 class="fw-bold mb-0"><%= reserva.celular %></h5>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 bg-light rounded-4 h-100">
+                  <p class="text-muted mb-1">Código de reserva</p>
+                  <h5 class="fw-bold mb-0"><code><%= reserva.codigo_reserva %></code></h5>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="p-3 bg-light rounded-4 h-100">
+                  <p class="text-muted mb-1">Asiento</p>
+                  <h5 class="fw-bold mb-0"><%= reserva.asiento %></h5>
+                </div>
+              </div>
+            </div>
+
+            <div class="alert alert-info border-0 rounded-4">
+              <i class="bi bi-whatsapp me-2"></i>
+              Para que el cliente reciba el aviso, presiona el botón de WhatsApp y envía el mensaje preparado.
+              La web ya confirmó el pago en la base de datos.
+            </div>
+
+            <label class="form-label fw-bold">Mensaje listo para enviar</label>
+            <textarea class="form-control mb-4" rows="9" readonly><%= mensajeCliente %></textarea>
+
+            <div class="d-flex gap-2 flex-wrap">
+              <% if (linkWhatsapp) { %>
+                <a href="<%= linkWhatsapp %>" target="_blank" class="btn btn-success btn-lg">
+                  <i class="bi bi-whatsapp me-2"></i>Enviar WhatsApp al cliente
+                </a>
+              <% } else { %>
+                <button class="btn btn-secondary btn-lg" disabled>
+                  <i class="bi bi-exclamation-circle me-2"></i>Celular no válido para WhatsApp
+                </button>
+              <% } %>
+
+              <a href="/admin/dashboard" class="btn btn-outline-dark btn-lg">
+                <i class="bi bi-arrow-left me-2"></i>Volver al panel
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

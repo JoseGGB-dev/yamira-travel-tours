@@ -1,0 +1,301 @@
+<%- include('partials/header') %>
+
+<% const img = {
+  hero: '/img/landing/hero-mountains.jpg',
+  cajatambo: '/img/landing/cajatambo.jpg',
+  uramasa: '/img/landing/uramasa.jpg',
+  termales: '/img/landing/termales.jpg',
+  trekking: '/img/landing/trekking.jpg',
+  mirador: '/img/landing/mirador.jpg',
+  bus: '/img/landing/bus.jpg'
+};
+const waReserva = `https://wa.me/${whatsappAdmin}?text=${encodeURIComponent('Hola Yamira Travel Tours, quiero reservar un viaje a Cajatambo o Uramasa')}`;
+%>
+
+<section id="inicio" class="hero-3d position-relative overflow-hidden">
+  <div class="hero-3d-bg parallax-bg" style="background-image:url('<%= img.hero %>')"></div>
+  <div class="hero-3d-overlay"></div>
+  <div class="orb orb-one"></div>
+  <div class="orb orb-two"></div>
+  <div class="orb orb-three"></div>
+
+  <div class="container position-relative hero-3d-content">
+    <div class="row align-items-center g-5 min-vh-3d">
+      <div class="col-lg-7 text-white reveal-up">
+        <div class="glass-chip mb-4">
+          <i class="bi bi-stars text-yamira-gold"></i>
+          Experiencia premium en los Andes peruanos
+        </div>
+
+        <h1 class="hero-title mb-4">
+          Viaja seguro y cómodo con <span>Yamira Travel Tours</span>
+        </h1>
+        <p class="hero-subtitle mb-4">
+          Conectamos Lima, Cajatambo y Uramasa con un servicio familiar, seguro y moderno. Reserva tu asiento online, paga por Yape, Plin o transferencia y confirma por WhatsApp.
+        </p>
+
+        <div class="d-flex flex-wrap gap-3 mb-5">
+          <a href="/viajes" class="btn btn-yamira-gold btn-lg rounded-pill fw-bold px-4 shadow-3d">
+            <i class="bi bi-ticket-perforated me-2"></i>Reservar viaje
+          </a>
+          <a href="/turismo" class="btn btn-glass-light btn-lg rounded-pill fw-bold px-4">
+            <i class="bi bi-binoculars me-2"></i>Ver destinos
+          </a>
+          <a href="<%= waReserva %>" target="_blank" class="btn btn-outline-light btn-lg rounded-pill fw-bold px-4">
+            <i class="bi bi-whatsapp me-2"></i>WhatsApp
+          </a>
+        </div>
+
+        <div class="row g-3 hero-stats-3d">
+          <div class="col-6 col-md-3"><div class="stat-3d"><strong>18</strong><span>asientos</span></div></div>
+          <div class="col-6 col-md-3"><div class="stat-3d"><strong>100%</strong><span>reserva online</span></div></div>
+          <div class="col-6 col-md-3"><div class="stat-3d"><strong>Yape</strong><span>Plin / Banco</span></div></div>
+          <div class="col-6 col-md-3"><div class="stat-3d"><strong>WA</strong><span>confirmación</span></div></div>
+        </div>
+      </div>
+
+      <div class="col-lg-5 reveal-up delay-1">
+        <div class="booking-orbit-card">
+          <div class="card-glow"></div>
+          <div class="booking-3d-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <span class="badge rounded-pill bg-warning text-dark fw-bold">Próximas salidas</span>
+                <h3 class="fw-black mb-0 mt-2">Reserva tu asiento</h3>
+              </div>
+              <div class="icon-cube"><i class="bi bi-bus-front-fill"></i></div>
+            </div>
+
+            <img src="<%= img.bus %>" alt="Transporte Yamira Travel Tours" class="booking-img mb-3">
+
+            <% if (proximosViajes.length === 0) { %>
+              <div class="alert alert-info rounded-4 mb-0">
+                <i class="bi bi-info-circle me-2"></i>Aún no hay viajes programados. Escríbenos por WhatsApp para coordinar una salida.
+              </div>
+            <% } else { %>
+              <% proximosViajes.slice(0, 2).forEach(function(viaje) { %>
+                <div class="mini-viaje-3d mb-3">
+                  <div class="d-flex justify-content-between align-items-start gap-3">
+                    <div>
+                      <div class="small text-muted">Ruta</div>
+                      <div class="fw-bold"><%= viaje.origen %> → <%= viaje.destino %></div>
+                      <div class="small text-muted mt-1">
+                        <i class="bi bi-calendar3 me-1"></i><%= new Date(viaje.fecha).toLocaleDateString('es-PE', { weekday:'short', day:'numeric', month:'short' }) %>
+                        <span class="mx-1">·</span>
+                        <i class="bi bi-clock me-1"></i><%= viaje.hora %>
+                      </div>
+                    </div>
+                    <div class="text-end">
+                      <span class="price-pill">S/ <%= Number(viaje.precio).toFixed(2) %></span>
+                      <a href="/reservar/<%= viaje.id %>" class="btn btn-primary btn-sm rounded-pill mt-2 d-block">Elegir</a>
+                    </div>
+                  </div>
+                </div>
+              <% }) %>
+              <a href="/viajes" class="btn btn-outline-primary rounded-pill w-100 fw-bold">
+                Ver todos los viajes <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-soft-3d">
+  <div class="container py-lg-4">
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-4 reveal-up">
+        <span class="section-kicker">Servicio confiable</span>
+        <h2 class="display-6 fw-black mb-3">Todo listo para viajar tranquilo</h2>
+        <p class="text-muted mb-0">Reserva viajes reales, elige tu asiento, paga con voucher y confirma fácilmente por WhatsApp.</p>
+      </div>
+      <div class="col-lg-8">
+        <div class="row g-3">
+          <div class="col-md-6 reveal-up"><div class="feature-3d h-100"><i class="bi bi-grid-3x3-gap-fill"></i><h5>Mapa visual de asientos</h5><p>El pasajero ve qué asientos están libres u ocupados antes de reservar.</p></div></div>
+          <div class="col-md-6 reveal-up delay-1"><div class="feature-3d h-100"><i class="bi bi-headset"></i><h5>Atención personalizada</h5><p>Recibe orientación para tu viaje y confirma los detalles de tu reserva por WhatsApp.</p></div></div>
+          <div class="col-md-6 reveal-up delay-2"><div class="feature-3d h-100"><i class="bi bi-whatsapp"></i><h5>Voucher por WhatsApp</h5><p>El pasajero puede enviar su comprobante rápidamente después de pagar.</p></div></div>
+          <div class="col-md-6 reveal-up delay-3"><div class="feature-3d h-100"><i class="bi bi-cash-coin"></i><h5>Pagos flexibles</h5><p>Compatible con Yape, Plin y transferencia bancaria para mayor facilidad.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5" id="destinos">
+  <div class="container py-lg-5">
+    <div class="text-center mb-5 reveal-up">
+      <span class="section-kicker">Destinos principales</span>
+      <h2 class="display-6 fw-black">Naturaleza, tradición y descanso en los Andes de Lima</h2>
+      <p class="text-muted mx-auto" style="max-width:760px;">Cajatambo y Uramasa son ideales para visitar familia, desconectarse de la ciudad y disfrutar paisajes de montaña.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6 reveal-up">
+        <article class="destination-3d h-100">
+          <div class="destination-img-wrap">
+            <img src="<%= img.cajatambo %>" alt="Paisaje de Cajatambo" class="destination-3d-img">
+            <span class="floating-badge">Cajatambo</span>
+          </div>
+          <div class="destination-3d-body">
+            <h3 class="fw-black">Capital provincial, historia y rutas hacia paisajes andinos</h3>
+            <p>Cajatambo es un destino serrano de la región Lima, rodeado de miradores, rutas naturales, lagunas de altura y tradición local.</p>
+            <div class="destination-tags">
+              <span><i class="bi bi-arrow-up-circle"></i> 3,350 m aprox.</span>
+              <span><i class="bi bi-camera"></i> Miradores</span>
+              <span><i class="bi bi-cup-hot"></i> Gastronomía</span>
+            </div>
+            <a href="/turismo#cajatambo" class="btn btn-primary rounded-pill fw-bold mt-3">Ver Cajatambo</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-lg-6 reveal-up delay-1">
+        <article class="destination-3d h-100">
+          <div class="destination-img-wrap">
+            <img src="<%= img.uramasa %>" alt="Paisaje de Uramasa" class="destination-3d-img">
+            <span class="floating-badge green">Uramasa</span>
+          </div>
+          <div class="destination-3d-body">
+            <h3 class="fw-black">Caserío tranquilo, naturaleza y acceso a termas</h3>
+            <p>Uramasa conserva un ambiente auténtico de pueblo andino, ideal para descansar, caminar y conectar con paisajes cerca de Guñoc.</p>
+            <div class="destination-tags">
+              <span><i class="bi bi-arrow-up-circle"></i> 3,338 m aprox.</span>
+              <span><i class="bi bi-droplet-half"></i> Termas</span>
+              <span><i class="bi bi-tree"></i> Naturaleza</span>
+            </div>
+            <a href="/turismo#uramasa" class="btn btn-success rounded-pill fw-bold mt-3">Ver Uramasa</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="turismo" class="tourism-3d-section py-5 text-white position-relative overflow-hidden">
+  <div class="tourism-bg-orb"></div>
+  <div class="container py-lg-5 position-relative">
+    <div class="row align-items-end mb-4 reveal-up">
+      <div class="col-lg-8">
+        <span class="section-kicker light">Turismo y experiencias</span>
+        <h2 class="display-6 fw-black mb-2">Atractivos que hacen especial la ruta</h2>
+        <p class="text-white-60 mb-0">Muestra a tus pasajeros que el viaje no es solo transporte: también es naturaleza, cultura y descanso.</p>
+      </div>
+      <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+        <a href="/turismo" class="btn btn-outline-light rounded-pill fw-bold px-4">Abrir guía turística</a>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6 col-lg-3 reveal-up"><div class="attraction-3d"><img src="<%= img.trekking %>" alt="Cordillera Raura"><div><span>Aventura</span><h5>Cordillera Raura</h5></div></div></div>
+      <div class="col-md-6 col-lg-3 reveal-up delay-1"><div class="attraction-3d"><img src="<%= img.hero %>" alt="Lagunas de altura"><div><span>Lagunas</span><h5>Viconga y paisajes de altura</h5></div></div></div>
+      <div class="col-md-6 col-lg-3 reveal-up delay-2"><div class="attraction-3d"><img src="<%= img.termales %>" alt="Baños termales"><div><span>Relax</span><h5>Baños Termales de Guñoc</h5></div></div></div>
+      <div class="col-md-6 col-lg-3 reveal-up delay-3"><div class="attraction-3d"><img src="<%= img.mirador %>" alt="Mirador"><div><span>Fotografía</span><h5>Miradores y ruta rural</h5></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5" id="horarios">
+  <div class="container py-lg-5">
+    <div class="text-center mb-5 reveal-up">
+      <span class="section-kicker">Salidas disponibles</span>
+      <h2 class="display-6 fw-black">Próximos viajes</h2>
+      <p class="text-muted">Estos viajes disponibles se actualizan automáticamente cuando se programan nuevas salidas.</p>
+    </div>
+
+    <% if (proximosViajes.length === 0) { %>
+      <div class="alert alert-info text-center rounded-4 reveal-up">
+        <i class="bi bi-info-circle me-2"></i>No hay viajes programados por el momento.
+        <a href="#contacto" class="fw-bold">Contáctanos</a> para coordinar tu viaje.
+      </div>
+    <% } else { %>
+      <div class="row g-4 justify-content-center">
+        <% proximosViajes.forEach(function(viaje, index) { %>
+          <div class="col-md-6 col-lg-4 reveal-up" style="animation-delay:<%= index * 0.08 %>s">
+            <div class="viaje-card-3d h-100">
+              <div class="viaje-card-top">
+                <span class="badge bg-warning text-dark rounded-pill mb-2">Programado</span>
+                <h5 class="fw-bold mb-0"><%= viaje.origen %> → <%= viaje.destino %></h5>
+                <span class="viaje-price">S/ <%= Number(viaje.precio).toFixed(2) %></span>
+              </div>
+              <div class="viaje-card-body">
+                <div class="dato-viaje"><i class="bi bi-calendar3 text-primary"></i><span><%= new Date(viaje.fecha).toLocaleDateString('es-PE', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) %></span></div>
+                <div class="dato-viaje"><i class="bi bi-clock text-success"></i><span><%= viaje.hora %></span></div>
+                <div class="dato-viaje"><i class="bi bi-people text-warning"></i><span><%= viaje.capacidad %> asientos</span></div>
+              </div>
+              <a href="/reservar/<%= viaje.id %>" class="btn btn-primary w-100 rounded-pill fw-bold mt-3">
+                <i class="bi bi-ticket-perforated me-2"></i>Reservar asiento
+              </a>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      <div class="text-center mt-4 reveal-up">
+        <a href="/viajes" class="btn btn-outline-primary rounded-pill px-4 fw-bold">
+          Ver todos los viajes <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<section id="reservas" class="steps-3d py-5 text-white position-relative overflow-hidden">
+  <div class="container py-lg-5 position-relative">
+    <div class="text-center mb-5 reveal-up">
+      <span class="section-kicker light">Cómo reservar</span>
+      <h2 class="display-6 fw-black">5 pasos y estás listo para viajar</h2>
+    </div>
+    <div class="row g-3 text-center">
+      <div class="col-6 col-lg"><div class="step-3d h-100"><span>01</span><h6>Elige viaje</h6><p>Selecciona destino, fecha y horario.</p></div></div>
+      <div class="col-6 col-lg"><div class="step-3d h-100"><span>02</span><h6>Selecciona asiento</h6><p>El mapa muestra libres y ocupados.</p></div></div>
+      <div class="col-6 col-lg"><div class="step-3d h-100"><span>03</span><h6>Registra datos</h6><p>Nombre, DNI, celular y embarque.</p></div></div>
+      <div class="col-6 col-lg"><div class="step-3d h-100"><span>04</span><h6>Realiza pago</h6><p>Yape, Plin o transferencia.</p></div></div>
+      <div class="col-12 col-lg"><div class="step-3d h-100"><span>05</span><h6>Confirma</h6><p>Envía voucher y espera validación.</p></div></div>
+    </div>
+    <div class="text-center mt-4 reveal-up">
+      <a href="/viajes" class="btn btn-yamira-gold btn-lg rounded-pill px-5 fw-bold"><i class="bi bi-ticket-perforated me-2"></i>Empezar reserva</a>
+    </div>
+  </div>
+</section>
+
+<section class="gallery-3d py-5 bg-soft-3d">
+  <div class="container py-lg-5">
+    <div class="text-center mb-5 reveal-up">
+      <span class="section-kicker">Galería</span>
+      <h2 class="display-6 fw-black">Paisajes que inspiran el viaje</h2>
+      <p class="text-muted">Imágenes referenciales del frontend de Lovable. Puedes cambiarlas por fotos reales cuando las tengas.</p>
+    </div>
+    <div class="gallery-grid-3d reveal-up">
+      <img src="<%= img.hero %>" alt="Montañas" class="tall">
+      <img src="<%= img.cajatambo %>" alt="Cajatambo">
+      <img src="<%= img.uramasa %>" alt="Uramasa">
+      <img src="<%= img.termales %>" alt="Termales">
+      <img src="<%= img.trekking %>" alt="Trekking" class="wide">
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container py-lg-4">
+    <div class="text-center mb-5 reveal-up">
+      <span class="section-kicker">Testimonios</span>
+      <h2 class="display-6 fw-black">La confianza también viaja con nosotros</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4 reveal-up"><div class="testimonial-3d h-100"><div class="stars">★★★★★</div><p>“Reservé mi asiento desde el celular y el proceso fue rápido. La confirmación por WhatsApp ayuda bastante.”</p><strong>Pasajera frecuente</strong></div></div>
+      <div class="col-md-4 reveal-up delay-1"><div class="testimonial-3d h-100"><div class="stars">★★★★★</div><p>“Me gustó ver los asientos antes de pagar. Es más ordenado y da confianza para viajar en familia.”</p><strong>Cliente familiar</strong></div></div>
+      <div class="col-md-4 reveal-up delay-2"><div class="testimonial-3d h-100"><div class="stars">★★★★★</div><p>“La ruta a Cajatambo es bonita y la web explica mejor qué lugares se pueden visitar.”</p><strong>Visitante turístico</strong></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-3d text-white text-center py-5 position-relative overflow-hidden">
+  <div class="container position-relative py-4 reveal-up">
+    <h2 class="display-6 fw-black mb-3">Reserva tu próximo viaje con Yamira Travel Tours</h2>
+    <p class="lead text-white-60 mb-4">Elige tu ruta, separa tu asiento y viaja cómodo hacia Cajatambo o Uramasa.</p>
+    <a href="/viajes" class="btn btn-yamira-gold rounded-pill fw-bold px-4 me-2 mb-2"><i class="bi bi-bus-front me-2"></i>Ver viajes</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

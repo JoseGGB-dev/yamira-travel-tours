@@ -1,0 +1,38 @@
+<%- include('../partials/header') %>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+  <div class="card shadow border-0" style="width: 100%; max-width: 380px;">
+    <div class="card-header bg-primary text-white text-center py-4">
+      <i class="bi bi-person-lock display-5 d-block mb-2"></i>
+      <h4 class="fw-bold mb-0">Panel administrador</h4>
+    </div>
+    <div class="card-body p-4">
+      <% if (error) { %>
+        <div class="alert alert-danger py-2"><i class="bi bi-exclamation-triangle me-2"></i><%= error %></div>
+      <% } %>
+      <form method="POST" action="/admin/login">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Usuario</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            <input type="text" name="usuario" class="form-control" required autofocus>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Contraseña</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+            <input type="password" name="password" class="form-control" required>
+          </div>
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,133 @@
+/* ===== Admin panel — Yamira Travel Tours ===== */
+.admin-shell {
+  padding: 110px 0 60px;
+  background:
+    radial-gradient(1200px 400px at 10% -10%, rgba(13,110,253,.08), transparent 60%),
+    radial-gradient(900px 300px at 100% 0%, rgba(255,193,7,.08), transparent 60%),
+    #f5f7fb;
+  min-height: 100vh;
+}
+
+.admin-topbar h2 { letter-spacing: -.02em; }
+
+/* KPI cards */
+.kpi-card {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  padding: 1rem 1.1rem;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid rgba(15,23,42,.06);
+  box-shadow: 0 8px 24px -16px rgba(15,23,42,.25);
+  min-height: 92px;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.kpi-card:hover { transform: translateY(-3px); box-shadow: 0 16px 32px -18px rgba(15,23,42,.35); }
+.kpi-icon {
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  border-radius: 12px;
+  font-size: 1.3rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+.kpi-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: #6b7280; font-weight: 600; }
+.kpi-value { font-size: 1.6rem; font-weight: 800; line-height: 1.1; color: #0f172a; }
+.kpi-sub   { font-size: .72rem; color: #94a3b8; }
+
+.kpi-primary .kpi-icon { background: linear-gradient(135deg,#3b82f6,#1d4ed8); }
+.kpi-info    .kpi-icon { background: linear-gradient(135deg,#06b6d4,#0369a1); }
+.kpi-warning .kpi-icon { background: linear-gradient(135deg,#f59e0b,#b45309); }
+.kpi-success .kpi-icon { background: linear-gradient(135deg,#10b981,#047857); }
+.kpi-danger  .kpi-icon { background: linear-gradient(135deg,#ef4444,#b91c1c); }
+.kpi-gold    .kpi-icon { background: linear-gradient(135deg,#eab308,#a16207); }
+
+/* Tabs */
+.admin-tabs .nav-link {
+  color: #475569;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: .55rem 1.1rem;
+}
+.admin-tabs .nav-link.active {
+  background: #0f172a;
+  color: #fff;
+}
+
+/* Cards & tables */
+.admin-card { border-radius: 18px; overflow: hidden; }
+.admin-search { max-width: 340px; }
+.admin-search .form-control:focus,
+.admin-search .input-group-text { box-shadow: none; }
+
+.admin-table { font-size: .92rem; }
+.admin-table thead th {
+  background: #f8fafc;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+  padding: .85rem 1rem;
+  white-space: nowrap;
+}
+.admin-table tbody td { padding: .85rem 1rem; border-color: #f1f5f9; }
+.admin-table tbody tr:hover { background: #f8fafc; }
+
+.route-pill {
+  display: inline-flex; align-items: center;
+  background: #eef2ff; color: #3730a3;
+  padding: .25rem .65rem; border-radius: 999px;
+  font-size: .82rem; font-weight: 600;
+  white-space: nowrap;
+}
+.seat-chip {
+  display: inline-grid; place-items: center;
+  width: 34px; height: 34px;
+  background: #0f172a; color: #fff;
+  border-radius: 10px; font-weight: 700;
+  font-size: .85rem;
+}
+
+/* Bus map */
+.bus-map {
+  background: #f1f5f9;
+  border: 2px dashed #cbd5e1;
+  border-radius: 22px;
+  padding: 1.2rem 1rem;
+  max-width: 320px;
+  margin: 0 auto;
+}
+.bus-front {
+  background: #0f172a; color: #fff;
+  text-align: center;
+  padding: .55rem; border-radius: 12px;
+  font-weight: 600; font-size: .85rem;
+  margin-bottom: 1rem;
+}
+.bus-row { display: flex; gap: .45rem; justify-content: center; margin-bottom: .45rem; }
+.aisle { width: 18px; }
+.seat {
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  border-radius: 10px;
+  font-weight: 700; font-size: .85rem;
+  border: 2px solid transparent;
+  user-select: none;
+}
+.seat-free { background: #fff; color: #0f172a; border-color: #cbd5e1; box-shadow: 0 2px 0 #cbd5e1; }
+.seat-busy { background: #ef4444; color: #fff; border-color: #b91c1c; box-shadow: 0 2px 0 #7f1d1d; }
+.legend-dot {
+  display: inline-block; width: 12px; height: 12px;
+  border-radius: 3px; margin-right: 6px; vertical-align: middle;
+}
+.seat-free-dot { background: #fff; border: 2px solid #cbd5e1; }
+.seat-busy-dot { background: #ef4444; }
+
+@media (max-width: 576px) {
+  .admin-shell { padding-top: 95px; }
+  .kpi-card { min-height: 80px; padding: .8rem; }
+  .kpi-value { font-size: 1.3rem; }
+  .admin-search { max-width: 100%; }
+}

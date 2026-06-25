@@ -1,0 +1,109 @@
+<%- include('partials/header') %>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+
+        <nav aria-label="breadcrumb" class="mb-3">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="/viajes">Viajes</a></li>
+            <li class="breadcrumb-item active">Reservar</li>
+          </ol>
+        </nav>
+
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0 fw-bold">
+              <i class="bi bi-geo-alt me-2"></i><%= viaje.origen %> &rarr; <%= viaje.destino %>
+            </h5>
+          </div>
+          <div class="card-body d-flex flex-wrap gap-4">
+            <span><i class="bi bi-calendar3 me-1 text-primary"></i><%= new Date(viaje.fecha).toLocaleDateString('es-PE', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) %></span>
+            <span><i class="bi bi-clock me-1 text-primary"></i><%= viaje.hora %></span>
+            <span><i class="bi bi-cash me-1 text-success"></i><strong>S/ <%= Number(viaje.precio).toFixed(2) %></strong></span>
+          </div>
+        </div>
+
+        <% if (error) { %>
+          <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i><%= error %></div>
+        <% } %>
+
+        <%
+          function renderAsiento(num) {
+            const ocupado = asientosOcupados.includes(num);
+            return '<button type="button" class="asiento ' + (ocupado ? 'ocupado' : '') +
+                   '" data-asiento="' + num + '" ' + (ocupado ? 'disabled' : '') + '>' + num + '</button>';
+          }
+        %>
+
+        <form method="POST" action="/reservar/<%= viaje.id %>" id="formReserva">
+
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-light fw-bold">
+              <i class="bi bi-grid-3x3-gap me-2"></i>Paso 1: Elige tu asiento
+            </div>
+            <div class="card-body">
+              <div class="leyenda-asientos d-flex gap-3 mb-3 flex-wrap">
+                <span class="d-flex align-items-center gap-1"><span class="asiento-muestra libre"></span>Disponible</span>
+                <span class="d-flex align-items-center gap-1"><span class="asiento-muestra selec"></span>Seleccionado</span>
+                <span class="d-flex align-items-center gap-1"><span class="asiento-muestra ocup"></span>Ocupado</span>
+              </div>
+
+              <div class="mapa-asientos-bus">
+                <div class="frente-vehiculo">🚐 Conductor</div>
+                <div class="fila fila-derecha"><%- renderAsiento(2) %><%- renderAsiento(3) %></div>
+                <div class="fila fila-izquierda"><%- renderAsiento(4) %><%- renderAsiento(5) %><%- renderAsiento(6) %></div>
+                <div class="fila fila-centro"><%- renderAsiento(7) %><%- renderAsiento(8) %><div class="pasillo"></div><%- renderAsiento(9) %><%- renderAsiento(10) %></div>
+                <div class="fila fila-centro"><%- renderAsiento(11) %><%- renderAsiento(12) %><div class="pasillo"></div><%- renderAsiento(13) %><%- renderAsiento(14) %></div>
+                <div class="fila fila-centro fila-ultima"><%- renderAsiento(15) %><%- renderAsiento(16) %><%- renderAsiento(17) %><%- renderAsiento(18) %></div>
+              </div>
+
+              <input type="hidden" name="asiento" id="asientoSeleccionado" required>
+              <div id="textoAsiento" class="alert alert-warning mt-3 py-2">
+                <i class="bi bi-cursor me-2"></i>Haz clic en un asiento disponible para seleccionarlo.
+              </div>
+            </div>
+          </div>
+
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-light fw-bold">
+              <i class="bi bi-person-fill me-2"></i>Paso 2: Tus datos
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Nombre completo</label>
+                <input type="text" name="nombre_cliente" class="form-control" placeholder="Ej: Juan Pérez García" required>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">DNI</label>
+                  <input type="text" name="dni" class="form-control" pattern="[0-9]{8}" maxlength="8" placeholder="12345678" title="8 dígitos" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Celular</label>
+                  <input type="text" name="celular" class="form-control" pattern="[0-9]{9}" maxlength="9" placeholder="987654321" title="9 dígitos" required>
+                </div>
+              </div>
+              <div class="mt-3">
+                <label class="form-label fw-semibold">Punto de embarque</label>
+                <input type="text" name="punto_embarque" class="form-control" placeholder="Ej: Paradero Puente Piedra" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">
+              <i class="bi bi-check-circle me-2"></i>Confirmar reserva
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="/js/reservar.js"></script>
+<%- include('partials/footer') %>

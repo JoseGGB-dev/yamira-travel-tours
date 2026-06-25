@@ -1,0 +1,43 @@
+<%- include('partials/header') %>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-7">
+        <div class="card shadow border-0">
+          <div class="card-header bg-success text-white text-center py-4">
+            <i class="bi bi-check-circle-fill display-4 mb-2 d-block"></i>
+            <h3 class="fw-bold mb-0">¡Reserva registrada!</h3>
+          </div>
+          <div class="card-body p-4">
+            <p class="text-center text-muted mb-1">Tu código de reserva es:</p>
+            <p class="codigo-reserva text-center"><%= reserva.codigo_reserva %></p>
+            <p class="text-center text-muted small mb-4">Guarda este código, lo necesitarás para pagar y consultar tu reserva.</p>
+
+            <table class="table table-bordered table-sm">
+              <tr><td class="fw-semibold text-muted">Ruta</td><td><%= reserva.origen %> &rarr; <%= reserva.destino %></td></tr>
+              <tr><td class="fw-semibold text-muted">Fecha</td><td><%= new Date(reserva.fecha).toLocaleDateString('es-PE', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) %></td></tr>
+              <tr><td class="fw-semibold text-muted">Hora</td><td><%= reserva.hora %></td></tr>
+              <tr><td class="fw-semibold text-muted">Asiento</td><td><%= reserva.asiento %></td></tr>
+              <tr><td class="fw-semibold text-muted">Pasajero</td><td><%= reserva.nombre_cliente %></td></tr>
+              <tr><td class="fw-semibold text-muted">Punto de embarque</td><td><%= reserva.punto_embarque %></td></tr>
+              <tr><td class="fw-semibold text-muted">Monto a pagar</td><td><strong>S/ <%= Number(reserva.precio).toFixed(2) %></strong></td></tr>
+              <tr><td class="fw-semibold text-muted">Estado</td><td><span class="badge bg-warning text-dark"><%= reserva.estado %></span></td></tr>
+            </table>
+
+            <div class="d-grid gap-2 mt-3">
+              <a href="/pago/<%= reserva.codigo_reserva %>" class="btn btn-primary btn-lg">
+                <i class="bi bi-credit-card me-2"></i>Proceder al pago
+              </a>
+              <a href="/" class="btn btn-outline-secondary">
+                <i class="bi bi-house me-2"></i>Volver al inicio
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

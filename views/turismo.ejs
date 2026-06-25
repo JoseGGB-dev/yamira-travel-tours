@@ -1,0 +1,298 @@
+<%- include('partials/header') %>
+
+<% const imgs = {
+  hero: '/img/landing/hero-mountains.jpg',
+  cajatambo: '/img/landing/cajatambo.jpg',
+  uramasa: '/img/landing/uramasa.jpg',
+  raura: '/img/landing/trekking.jpg',
+  viconga: '/img/landing/hero-mountains.jpg',
+  guñoc: '/img/landing/termales.jpg',
+  mirador: '/img/landing/mirador.jpg',
+  cascada: '/img/landing/cajatambo.jpg',
+  cultura: '/img/landing/uramasa.jpg',
+  comida: '/img/landing/bus.jpg'
+};
+
+const atractivosCajatambo = [
+  {
+    titulo: 'Cordillera Raura y nevados',
+    badge: 'Montaña',
+    icono: 'bi-snow',
+    color: 'primary',
+    img: imgs.raura,
+    texto: 'Paisajes de alta montaña con lagunas, glaciares y rutas de trekking para viajeros aventureros. Es una de las zonas más atractivas para fotografía de naturaleza.',
+    tags: ['Trekking', 'Fotografía', 'Altura']
+  },
+  {
+    titulo: 'Laguna Viconga',
+    badge: 'Laguna',
+    icono: 'bi-water',
+    color: 'info',
+    img: imgs.viconga,
+    texto: 'Laguna de altura vinculada a caminatas por la Cordillera Huayhuash. Desde sus miradores se observan nevados, campamentos y senderos andinos.',
+    tags: ['Huayhuash', 'Campamento', 'Paisaje']
+  },
+  {
+    titulo: 'Mirador Cruz Punta',
+    badge: 'Mirador',
+    icono: 'bi-binoculars',
+    color: 'warning',
+    img: imgs.mirador,
+    texto: 'Mirador natural con vista hacia la ciudad de Cajatambo, su campiña y montañas cercanas. Ideal para iniciar la visita y tomar fotos panorámicas.',
+    tags: ['Vista 360°', 'Fotos', 'Caminata']
+  },
+  {
+    titulo: 'Gastronomía local',
+    badge: 'Tradición',
+    icono: 'bi-cup-hot',
+    color: 'danger',
+    img: imgs.comida,
+    texto: 'Quesos, mantequilla, manjar blanco, platos de cerdo y comida de sierra forman parte de la experiencia para visitantes y pasajeros.',
+    tags: ['Queso', 'Manjar blanco', 'Comida andina']
+  }
+];
+
+const atractivosUramasa = [
+  {
+    titulo: 'Baños Termales de Guñoc',
+    badge: 'Termas',
+    icono: 'bi-droplet-half',
+    color: 'danger',
+    img: imgs.guñoc,
+    texto: 'Aguas termo-minerales ubicadas en zona de puna, cerca de Uramasa. Son ideales para descansar después de una caminata y conectar con la naturaleza.',
+    tags: ['4,354 m', 'Relax', 'Campamento']
+  },
+  {
+    titulo: 'Cascada Escalón',
+    badge: 'Cascada',
+    icono: 'bi-water',
+    color: 'info',
+    img: imgs.cascada,
+    texto: 'Ruta natural asociada a Uramasa, con caídas de agua, flora altoandina y potencial para trekking corto, observación de paisaje y fotografía.',
+    tags: ['4,111 m', 'Trekking', 'Fotografía']
+  },
+  {
+    titulo: 'Paisaje y vida rural',
+    badge: 'Comunidad',
+    icono: 'bi-houses',
+    color: 'success',
+    img: imgs.uramasa,
+    texto: 'Uramasa conserva un ambiente tranquilo de caserío andino. Es perfecto para quienes buscan visitar familia, descansar y respirar aire puro.',
+    tags: ['Caserío', 'Naturaleza', 'Tranquilidad']
+  },
+  {
+    titulo: 'Ruta hacia Huayhuash',
+    badge: 'Aventura',
+    icono: 'bi-signpost-split',
+    color: 'primary',
+    img: imgs.raura,
+    texto: 'Desde esta zona se conectan rutas naturales importantes hacia lagunas, quebradas y circuitos de montaña de la Cordillera Huayhuash.',
+    tags: ['Aventura', 'Quebradas', 'Montaña']
+  }
+]; %>
+
+<!-- HERO TURISMO -->
+<section class="turismo-hero-v2 position-relative overflow-hidden">
+  <div class="turismo-hero-bg" style="background-image:url('<%= imgs.hero %>')"></div>
+  <div class="turismo-hero-gradient"></div>
+  <div class="container position-relative text-white py-5">
+    <div class="row align-items-center min-vh-tourism g-5">
+      <div class="col-lg-8">
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-semibold mb-3">
+          <i class="bi bi-map me-1"></i> Guía turística para promocionar la ruta
+        </span>
+        <h1 class="display-3 fw-black lh-1 mb-3">Cajatambo y Uramasa: guía para tus pasajeros</h1>
+        <p class="lead text-white-75 mb-4" style="max-width:760px;">
+          Agrega valor a tu servicio mostrando qué pueden conocer antes, durante y después del viaje: miradores, lagunas, termas, cascadas, cultura y recomendaciones útiles.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="/viajes" class="btn btn-warning btn-lg rounded-pill fw-bold px-4"><i class="bi bi-ticket-perforated me-2"></i>Reservar viaje</a>
+          <a href="#cajatambo" class="btn btn-outline-light btn-lg rounded-pill fw-bold px-4"><i class="bi bi-arrow-down-circle me-2"></i>Explorar guía</a>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="tourism-side-card shadow-lg">
+          <h5 class="fw-bold mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Datos rápidos</h5>
+          <div class="tourism-fact"><span>Cajatambo</span><strong>3,350 m s. n. m.</strong></div>
+          <div class="tourism-fact"><span>Uramasa</span><strong>3,338 m s. n. m.</strong></div>
+          <div class="tourism-fact"><span>Guñoc</span><strong>4,354 m s. n. m.</strong></div>
+          <div class="tourism-fact"><span>Mejor época</span><strong>Abril a octubre</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESUMEN -->
+<section class="py-4 bg-primary text-white">
+  <div class="container">
+    <div class="row g-3 text-center">
+      <div class="col-6 col-md-3"><div class="quick-data"><i class="bi bi-mountain fs-2"></i><strong>Andes de Lima</strong><small>Montañas y quebradas</small></div></div>
+      <div class="col-6 col-md-3"><div class="quick-data"><i class="bi bi-droplet-half fs-2"></i><strong>Termas</strong><small>Guñoc cerca de Uramasa</small></div></div>
+      <div class="col-6 col-md-3"><div class="quick-data"><i class="bi bi-camera fs-2"></i><strong>Fotos</strong><small>Miradores y lagunas</small></div></div>
+      <div class="col-6 col-md-3"><div class="quick-data"><i class="bi bi-cup-hot fs-2"></i><strong>Tradición</strong><small>Gastronomía andina</small></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CAJATAMBO -->
+<section id="cajatambo" class="py-5">
+  <div class="container">
+    <div class="row g-5 align-items-center mb-5">
+      <div class="col-lg-6">
+        <img src="<%= imgs.cajatambo %>" alt="Paisaje referencial de Cajatambo" class="img-fluid rounded-5 shadow-lg destination-main-img">
+      </div>
+      <div class="col-lg-6">
+        <span class="badge bg-primary rounded-pill px-3 py-2 mb-2">Destino principal</span>
+        <h2 class="fw-bold display-6">Cajatambo</h2>
+        <p class="text-muted lead">Capital de la provincia de Cajatambo, ubicada en la región Lima. Es reconocida por su clima de sierra, su historia, su conexión con caminos andinos y por ser puerta de entrada a rutas naturales de montaña.</p>
+        <div class="row g-3 mt-2">
+          <div class="col-sm-6"><div class="info-pill"><i class="bi bi-arrow-up-circle"></i><span>Altitud aprox. 3,350 m</span></div></div>
+          <div class="col-sm-6"><div class="info-pill"><i class="bi bi-geo-alt"></i><span>Provincia de Cajatambo, Lima</span></div></div>
+          <div class="col-sm-6"><div class="info-pill"><i class="bi bi-tree"></i><span>Naturaleza y miradores</span></div></div>
+          <div class="col-sm-6"><div class="info-pill"><i class="bi bi-person-walking"></i><span>Caminatas y rutas</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <% atractivosCajatambo.forEach(function(item) { %>
+        <div class="col-md-6 col-lg-3">
+          <article class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 atractivo-card">
+            <div class="atractivo-img-wrap">
+              <img src="<%= item.img %>" alt="<%= item.titulo %>" class="atractivo-img">
+              <span class="badge bg-<%= item.color %> atractivo-badge"><%= item.badge %></span>
+            </div>
+            <div class="card-body p-4">
+              <h5 class="fw-bold"><i class="bi <%= item.icono %> text-<%= item.color %> me-2"></i><%= item.titulo %></h5>
+              <p class="text-muted small"><%= item.texto %></p>
+              <div class="d-flex gap-2 flex-wrap">
+                <% item.tags.forEach(function(tag) { %><span class="badge bg-light text-dark border"><%= tag %></span><% }) %>
+              </div>
+            </div>
+          </article>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- URAMASA -->
+<section id="uramasa" class="py-5 bg-soft">
+  <div class="container">
+    <div class="row g-5 align-items-center mb-5 flex-lg-row-reverse">
+      <div class="col-lg-6">
+        <img src="<%= imgs.uramasa %>" alt="Paisaje referencial de Uramasa" class="img-fluid rounded-5 shadow-lg destination-main-img">
+      </div>
+      <div class="col-lg-6">
+        <span class="badge bg-success rounded-pill px-3 py-2 mb-2">Ruta serrana</span>
+        <h2 class="fw-bold display-6">Uramasa</h2>
+        <p class="text-muted lead">Uramasa es un caserío del distrito de Cajatambo. Su valor está en la tranquilidad de pueblo, la cercanía a recursos naturales y su vínculo con la comunidad campesina que conserva y mantiene varios atractivos.</p>
+        <div class="row g-3 mt-2">
+          <div class="col-sm-6"><div class="info-pill"><i class="bi bi-arrow-up-circle"></i><span>Altitud aprox. 3,338 m</span></div></div>
+          <div class="col-sm-6"><div class="info-pill"><i class="bi bi-geo-alt"></i><span>Distrito de Cajatambo</span></div></div>
+          <div class="col-sm-6"><div class="info-pill"><i class="bi bi-droplet-half"></i><span>Cerca de Guñoc</span></div></div>
+          <div class="col-sm-6"><div class="info-pill"><i class="bi bi-water"></i><span>Cascadas y quebradas</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <% atractivosUramasa.forEach(function(item) { %>
+        <div class="col-md-6 col-lg-3">
+          <article class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 atractivo-card">
+            <div class="atractivo-img-wrap">
+              <img src="<%= item.img %>" alt="<%= item.titulo %>" class="atractivo-img">
+              <span class="badge bg-<%= item.color %> atractivo-badge"><%= item.badge %></span>
+            </div>
+            <div class="card-body p-4">
+              <h5 class="fw-bold"><i class="bi <%= item.icono %> text-<%= item.color %> me-2"></i><%= item.titulo %></h5>
+              <p class="text-muted small"><%= item.texto %></p>
+              <div class="d-flex gap-2 flex-wrap">
+                <% item.tags.forEach(function(tag) { %><span class="badge bg-light text-dark border"><%= tag %></span><% }) %>
+              </div>
+            </div>
+          </article>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- RUTA SUGERIDA -->
+<section class="py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="badge bg-warning text-dark fw-semibold px-3 py-2 rounded-pill mb-2">Itinerario para vender mejor</span>
+      <h2 class="fw-bold display-6">Ideas de experiencia para el pasajero</h2>
+      <p class="text-muted mx-auto" style="max-width:700px;">Puedes usar esta sección como contenido comercial para motivar reservas familiares o turísticas.</p>
+    </div>
+    <div class="timeline-wrap">
+      <div class="timeline-item"><span>01</span><div><h5>Salida desde Puente Piedra</h5><p>Viaje cómodo en miniván, con reserva previa y asiento elegido desde la web.</p></div></div>
+      <div class="timeline-item"><span>02</span><div><h5>Llegada a Cajatambo</h5><p>Recorrido por la plaza, miradores cercanos, comida local y descanso.</p></div></div>
+      <div class="timeline-item"><span>03</span><div><h5>Visita a Uramasa / Guñoc</h5><p>Ruta hacia termas, paisajes altoandinos, caminatas cortas y fotografía.</p></div></div>
+      <div class="timeline-item"><span>04</span><div><h5>Retorno o noche adicional</h5><p>Ideal para viajes familiares, visitas a parientes, turismo rural o escapadas de fin de semana.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERIA -->
+<section class="py-5 bg-dark text-white">
+  <div class="container">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold display-6">Galería referencial</h2>
+      <p class="text-white-50">Estas imágenes son referenciales. Cuando tengas fotos reales de la miniván, Cajatambo o Uramasa, solo reemplázalas en el código.</p>
+    </div>
+    <div class="masonry-gallery">
+      <img src="<%= imgs.raura %>" alt="Montañas referenciales">
+      <img src="<%= imgs.viconga %>" alt="Laguna referencial">
+      <img src="<%= imgs.guñoc %>" alt="Termas referenciales">
+      <img src="<%= imgs.cascada %>" alt="Cascada referencial">
+      <img src="<%= imgs.cultura %>" alt="Cultura referencial">
+      <img src="<%= imgs.uramasa %>" alt="Pueblo andino referencial">
+    </div>
+  </div>
+</section>
+
+<!-- RECOMENDACIONES -->
+<section class="py-5 bg-soft">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+          <h4 class="fw-bold text-primary mb-3"><i class="bi bi-backpack me-2"></i>¿Qué llevar?</h4>
+          <ul class="clean-list">
+            <li>Ropa abrigadora para la noche y casaca cortaviento.</li>
+            <li>Zapatillas o botas cómodas para caminar.</li>
+            <li>Bloqueador solar, gorra y lentes de sol.</li>
+            <li>DNI, efectivo y batería externa para el celular.</li>
+            <li>Agua, snacks y medicina personal para el trayecto.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+          <h4 class="fw-bold text-warning mb-3"><i class="bi bi-exclamation-triangle me-2"></i>Consejos de viaje</h4>
+          <ul class="clean-list warning-list">
+            <li>Llegar al punto de embarque 15 minutos antes.</li>
+            <li>Descansar bien antes del viaje, especialmente si la salida es temprano.</li>
+            <li>Evitar comidas pesadas si sufres mareos en carretera.</li>
+            <li>Consultar clima y estado de ruta antes de visitar zonas altas.</li>
+            <li>Confirmar el pago con voucher para asegurar el asiento.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5 bg-primary text-white text-center">
+  <div class="container py-3">
+    <h2 class="fw-bold display-6 mb-3">¿Listo para vivir la experiencia?</h2>
+    <p class="lead text-white-75 mb-4">Reserva tu asiento y viaja hacia Cajatambo o Uramasa con información clara desde el inicio.</p>
+    <a href="/viajes" class="btn btn-warning btn-lg rounded-pill px-5 fw-bold"><i class="bi bi-ticket-perforated me-2"></i>Ver viajes disponibles</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

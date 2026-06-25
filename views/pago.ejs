@@ -1,0 +1,111 @@
+<%- include('partials/header') %>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-header bg-primary text-white fw-bold">
+            <i class="bi bi-receipt me-2"></i>Resumen de tu reserva — <%= reserva.codigo_reserva %>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <p class="mb-1 text-muted small">Ruta</p>
+                <p class="fw-semibold mb-0"><%= reserva.origen %> &rarr; <%= reserva.destino %></p>
+              </div>
+              <div class="col-sm-6">
+                <p class="mb-1 text-muted small">Fecha y hora</p>
+                <p class="fw-semibold mb-0"><%= new Date(reserva.fecha).toLocaleDateString('es-PE') %> <%= reserva.hora %></p>
+              </div>
+              <div class="col-sm-6">
+                <p class="mb-1 text-muted small">Pasajero</p>
+                <p class="fw-semibold mb-0"><%= reserva.nombre_cliente %></p>
+              </div>
+              <div class="col-sm-6">
+                <p class="mb-1 text-muted small">Asiento</p>
+                <p class="fw-semibold mb-0"><%= reserva.asiento %></p>
+              </div>
+              <div class="col-12">
+                <p class="mb-1 text-muted small">Monto a pagar</p>
+                <p class="fs-4 fw-bold text-success mb-0">S/ <%= Number(reserva.precio).toFixed(2) %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <% if (error) { %>
+          <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i><%= error %></div>
+        <% } %>
+
+        <h5 class="fw-bold mb-3">Métodos de pago aceptados</h5>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center p-3 h-100">
+              <div class="fs-1 mb-1">💜</div>
+              <h6 class="fw-bold">Yape</h6>
+              <p class="mb-0 small text-muted">987 654 321</p>
+              <p class="mb-0 small text-muted">Nombre del Titular</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center p-3 h-100">
+              <div class="fs-1 mb-1">💙</div>
+              <h6 class="fw-bold">Plin</h6>
+              <p class="mb-0 small text-muted">987 654 321</p>
+              <p class="mb-0 small text-muted">Nombre del Titular</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center p-3 h-100">
+              <div class="fs-1 mb-1">🏦</div>
+              <h6 class="fw-bold">Transferencia</h6>
+              <p class="mb-0 small text-muted">BCP: 191-XXXXXXXX-0-XX</p>
+              <p class="mb-0 small text-muted">CCI: 002-191-XXXXXXXXXXXXX-XX</p>
+            </div>
+          </div>
+        </div>
+        <p class="text-muted small mb-4">
+          <i class="bi bi-info-circle me-1"></i>Reemplaza estos datos con los reales antes de publicar la web.
+        </p>
+
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-light fw-bold">
+            <i class="bi bi-upload me-2"></i>Registrar tu comprobante de pago
+          </div>
+          <div class="card-body">
+            <form method="POST" action="/pago/<%= reserva.codigo_reserva %>" enctype="multipart/form-data">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Método de pago utilizado</label>
+                <select name="metodo" class="form-select" required>
+                  <option value="">-- Selecciona --</option>
+                  <option value="yape">Yape</option>
+                  <option value="plin">Plin</option>
+                  <option value="transferencia">Transferencia bancaria</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Código de operación <span class="text-muted fw-normal">(opcional)</span></label>
+                <input type="text" name="codigo_operacion" class="form-control" placeholder="Ej: 0012345678">
+              </div>
+              <div class="mb-4">
+                <label class="form-label fw-semibold">Captura o foto del voucher</label>
+                <input type="file" name="voucher" class="form-control" accept="image/png,image/jpeg,application/pdf" required>
+                <div class="form-text">Formatos: JPG, PNG o PDF. Tamaño máximo: 5 MB.</div>
+              </div>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="bi bi-send me-2"></i>Registrar pago
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

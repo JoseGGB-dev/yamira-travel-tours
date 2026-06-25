@@ -1,0 +1,39 @@
+<%- include('partials/header') %>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-7">
+        <div class="card shadow border-0">
+          <div class="card-header bg-success text-white text-center py-4">
+            <i class="bi bi-check-circle-fill display-4 d-block mb-2"></i>
+            <h3 class="fw-bold mb-0">¡Pago registrado!</h3>
+          </div>
+          <div class="card-body p-4 text-center">
+            <p class="text-muted mb-4">
+              Recibimos tu comprobante. El último paso es enviarnos el voucher por WhatsApp para confirmar tu reserva más rápido.
+            </p>
+
+            <table class="table table-bordered table-sm text-start mb-4">
+              <tr><td class="fw-semibold text-muted">Código de reserva</td><td><strong><%= reserva.codigo_reserva %></strong></td></tr>
+              <tr><td class="fw-semibold text-muted">Método de pago</td><td><%= pago ? pago.metodo : '-' %></td></tr>
+              <tr><td class="fw-semibold text-muted">Monto</td><td>S/ <%= Number(reserva.precio).toFixed(2) %></td></tr>
+              <tr><td class="fw-semibold text-muted">Estado</td><td><span class="badge bg-warning text-dark">En revisión</span></td></tr>
+            </table>
+
+            <a href="<%= linkWhatsapp %>" target="_blank" class="btn btn-success btn-lg w-100 mb-3">
+              <i class="bi bi-whatsapp me-2"></i>Enviar voucher por WhatsApp
+            </a>
+            <p class="text-muted small">Al hacer clic, se abrirá WhatsApp con tu información de reserva ya redactada. Solo adjunta la imagen de tu voucher y envíala.</p>
+
+            <a href="/" class="btn btn-outline-secondary w-100 mt-2">
+              <i class="bi bi-house me-2"></i>Volver al inicio
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

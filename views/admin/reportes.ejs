@@ -1,0 +1,29 @@
+<%- include('../partials/header') %>
+
+<h1>Reportes de ingresos</h1>
+
+<table class="tabla-admin">
+  <thead>
+    <tr><th>Ruta</th><th>Fecha</th><th>Hora</th><th>Precio</th><th>Asientos pagados</th><th>Ingresos</th></tr>
+  </thead>
+  <tbody>
+    <% let totalGeneral = 0; %>
+    <% filas.forEach(f => { totalGeneral += Number(f.ingresos); %>
+      <tr>
+        <td><%= f.origen %> &rarr; <%= f.destino %></td>
+        <td><%= new Date(f.fecha).toLocaleDateString('es-PE') %></td>
+        <td><%= f.hora %></td>
+        <td>S/ <%= f.precio %></td>
+        <td><%= f.asientos_pagados %></td>
+        <td>S/ <%= Number(f.ingresos).toFixed(2) %></td>
+      </tr>
+    <% }) %>
+  </tbody>
+  <tfoot>
+    <tr><td colspan="5"><strong>Total general</strong></td><td><strong>S/ <%= totalGeneral.toFixed(2) %></strong></td></tr>
+  </tfoot>
+</table>
+
+<a href="/admin/dashboard">&larr; Volver al panel</a>
+
+<%- include('../partials/footer') %>

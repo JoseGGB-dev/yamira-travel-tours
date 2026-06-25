@@ -1,0 +1,35 @@
+<%- include('../partials/header') %>
+
+<h1>Crear nuevo viaje</h1>
+
+<% if (error) { %>
+  <p class="mensaje-error"><%= error %></p>
+<% } %>
+
+<form method="POST" action="/admin/viajes/nuevo">
+  <label>Ruta</label>
+  <select name="ruta_id" required>
+    <option value="">-- Selecciona --</option>
+    <% rutas.forEach(r => { %>
+      <option value="<%= r.id %>"><%= r.origen %> &rarr; <%= r.destino %></option>
+    <% }) %>
+  </select>
+
+  <label>Fecha</label>
+  <input type="date" name="fecha" required>
+
+  <label>Hora</label>
+  <input type="time" name="hora" required>
+
+  <label>Precio (S/)</label>
+  <input type="number" name="precio" step="0.01" min="0" required>
+
+  <label>Capacidad</label>
+  <input type="number" name="capacidad" value="18" min="1" required>
+
+  <button type="submit" class="boton">Crear viaje</button>
+</form>
+
+<a href="/admin/dashboard">&larr; Volver al panel</a>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,41 @@
+<%- include('partials/header') %>
+
+<section class="py-5">
+  <div class="container">
+    <h1 class="fw-bold mb-2">Viajes disponibles</h1>
+    <p class="text-muted mb-4">Todos los viajes programados desde Puente Piedra hacia Cajatambo y Uramasa.</p>
+
+    <% if (viajes.length === 0) { %>
+      <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>No hay viajes programados por el momento. 
+        <a href="#contacto">Contáctanos</a> para más información.
+      </div>
+    <% } else { %>
+      <div class="row g-4">
+        <% viajes.forEach(viaje => { %>
+          <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0">
+              <div class="card-header bg-primary text-white fw-bold">
+                <i class="bi bi-geo-alt me-1"></i>
+                <%= viaje.origen %> &rarr; <%= viaje.destino %>
+              </div>
+              <div class="card-body">
+                <p class="mb-1"><i class="bi bi-calendar3 me-2 text-primary"></i><%= new Date(viaje.fecha).toLocaleDateString('es-PE', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) %></p>
+                <p class="mb-1"><i class="bi bi-clock me-2 text-primary"></i><%= viaje.hora %></p>
+                <p class="mb-1"><i class="bi bi-people me-2 text-primary"></i>Capacidad: <%= viaje.capacidad %> asientos</p>
+                <p class="mb-0"><i class="bi bi-cash me-2 text-success"></i><strong class="fs-5">S/ <%= Number(viaje.precio).toFixed(2) %></strong> por persona</p>
+              </div>
+              <div class="card-footer bg-white border-0 pb-3">
+                <a href="/reservar/<%= viaje.id %>" class="btn btn-primary w-100">
+                  <i class="bi bi-ticket-perforated me-2"></i>Reservar asiento
+                </a>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
