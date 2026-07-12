@@ -1,20 +1,23 @@
 const bcrypt = require('bcryptjs');
 const pool = require('../config/db');
+const {
+  expandirAsientosReservados,
+  contarAsientos,
+  calcularMontoReserva,
+  validarCelularPeruano
+} = require('../utils/reservaUtils');
 
+function enriquecerReserva(reserva) {
+  if (!reserva) return reserva;
+  reserva.cantidad_asientos = contarAsientos(reserva.asiento);
+  reserva.monto_total = Number(reserva.monto_pago || reserva.monto || calcularMontoReserva(reserva.precio_viaje || reserva.precio, reserva.asiento));
+  return reserva;
+}
 
 function formatearCelularWhatsapp(celular) {
-  if (!celular) return null;
-
-  let numero = String(celular).replace(/\D/g, '');
-
-  // Si el cliente escribió un celular peruano de 9 dígitos, agregamos el código de país 51.
-  if (numero.length === 9) {
-    numero = '51' + numero;
-  }
-
-  // Si ya viene como 51987654321, se deja igual.
-  if (numero.length < 10) return null;
-  return numero;
+  const numero = String(celular || '').replace(/\D/g, '');
+  if (!validarCelularPeruano(numero)) return null;
+  return '51' + numero;
 }
 
 function crearMensajePagoConfirmado(reserva) {
@@ -26,16 +29,25 @@ function crearMensajePagoConfirmado(reserva) {
         day: 'numeric'
       })
     : '';
+  const monto = Number(reserva.monto || reserva.monto_pago || calcularMontoReserva(reserva.precio, reserva.asiento)).toFixed(2);
 
-  return `✅ *Pago confirmado - Yamira Travel Tours*\n\n` +
+  return `Pago confirmado - Yamira Travel Tours\n\n` +
     `Hola ${reserva.nombre_cliente}, tu pago fue confirmado correctamente.\n\n` +
-    `📌 *Código de reserva:* ${reserva.codigo_reserva}\n` +
-    `🚌 *Ruta:* ${reserva.origen} → ${reserva.destino}\n` +
-    `📅 *Fecha:* ${fecha}\n` +
-    `🕒 *Hora:* ${reserva.hora}\n` +
-    `💺 *Asiento:* ${reserva.asiento}\n` +
-    `📍 *Embarque:* ${reserva.punto_embarque || 'Por confirmar'}\n\n` +
-    `Gracias por viajar con *Yamira Travel Tours*. Te esperamos. 🙌`;
+    `Codigo de reserva: ${reserva.codigo_reserva}\n` +
+    `Ruta: ${reserva.origen} -> ${reserva.destino}\n` +
+    `Fecha: ${fecha}\n` +
+    `Hora: ${reserva.hora}\n` +
+    `Asientos: ${reserva.asiento}\n` +
+    `Monto pagado: S/ ${monto}\n` +
+    `Estado: confirmado\n\n` +
+    `Gracias por viajar con Yamira Travel Tours. Te esperamos.`;
+}
+
+function seatCountSql(alias = 'res') {
+  return `CASE
+    WHEN ${alias}.asiento IS NULL OR ${alias}.asiento = '' THEN 0
+    ELSE LENGTH(CAST(${alias}.asiento AS CHAR)) - LENGTH(REPLACE(CAST(${alias}.asiento AS CHAR), ',', '')) + 1
+  END`;
 }
 
 // ---------- LOGIN ----------
@@ -50,19 +62,19 @@ exports.procesarLogin = async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM admin WHERE usuario = ?', [usuario]);
     if (rows.length === 0) {
-      return res.render('admin/login', { error: 'Usuario o contraseña incorrectos.' });
+      return res.render('admin/login', { error: 'Usuario o contrasena incorrectos.' });
     }
     const admin = rows[0];
     const coincide = await bcrypt.compare(password, admin.password);
     if (!coincide) {
-      return res.render('admin/login', { error: 'Usuario o contraseña incorrectos.' });
+      return res.render('admin/login', { error: 'Usuario o contrasena incorrectos.' });
     }
     req.session.adminId = admin.id;
     req.session.adminUsuario = admin.usuario;
     res.redirect('/admin/dashboard');
   } catch (error) {
     console.error('Error en login:', error);
-    res.render('admin/login', { error: 'Error al iniciar sesión.' });
+    res.render('admin/login', { error: 'Error al iniciar sesion.' });
   }
 };
 
@@ -77,7 +89,8 @@ exports.mostrarDashboard = async (req, res) => {
 
   let sql = `
     SELECT res.*, v.fecha, v.hora, v.precio AS precio_viaje, r.origen, r.destino,
-           p.metodo AS metodo_pago, p.estado AS estado_pago, p.id AS pago_id, p.voucher
+           p.metodo AS metodo_pago, p.estado AS estado_pago, p.id AS pago_id,
+           p.voucher, p.monto AS monto_pago
     FROM reservas res
     INNER JOIN viajes v ON res.viaje_id = v.id
     INNER JOIN rutas r ON v.ruta_id = r.id
@@ -93,7 +106,8 @@ exports.mostrarDashboard = async (req, res) => {
   sql += ' ORDER BY res.fecha_registro DESC';
 
   try {
-    const [reservas] = await pool.query(sql, params);
+    const [reservasRows] = await pool.query(sql, params);
+    const reservas = reservasRows.map(enriquecerReserva);
     const [viajes] = await pool.query(`
       SELECT v.id, v.fecha, v.hora, r.origen, r.destino, v.estado
       FROM viajes v INNER JOIN rutas r ON v.ruta_id = r.id
@@ -110,22 +124,34 @@ exports.mostrarDashboard = async (req, res) => {
 
 exports.mostrarNuevoViaje = async (req, res) => {
   const [rutas] = await pool.query("SELECT * FROM rutas WHERE estado = 'activa'");
-  res.render('admin/nuevo-viaje', { rutas, error: null });
+  res.render('admin/nuevo-viaje', { rutas, error: null, formData: {} });
 };
 
 exports.crearViaje = async (req, res) => {
   const { ruta_id, fecha, hora, precio, capacidad } = req.body;
+  const capacidadNum = Number.parseInt(capacidad, 10);
+  const precioNum = Number(precio);
+
   try {
+    if (!ruta_id || !fecha || !hora || !Number.isFinite(precioNum) || precioNum <= 0 || !Number.isInteger(capacidadNum) || capacidadNum < 2) {
+      const [rutas] = await pool.query("SELECT * FROM rutas WHERE estado = 'activa'");
+      return res.render('admin/nuevo-viaje', {
+        rutas,
+        error: 'Completa todos los campos. La capacidad debe ser mayor a 1 y el precio mayor a 0.',
+        formData: req.body
+      });
+    }
+
     await pool.query(
       `INSERT INTO viajes (ruta_id, fecha, hora, precio, capacidad, estado)
        VALUES (?, ?, ?, ?, ?, 'programado')`,
-      [ruta_id, fecha, hora, precio, capacidad || 18]
+      [ruta_id, fecha, hora, precioNum, capacidadNum]
     );
     res.redirect('/admin/dashboard');
   } catch (error) {
     console.error('Error al crear viaje:', error);
     const [rutas] = await pool.query("SELECT * FROM rutas WHERE estado = 'activa'");
-    res.render('admin/nuevo-viaje', { rutas, error: 'No se pudo crear el viaje.' });
+    res.render('admin/nuevo-viaje', { rutas, error: 'No se pudo crear el viaje.', formData: req.body });
   }
 };
 
@@ -151,7 +177,6 @@ exports.actualizarViaje = async (req, res) => {
   }
 };
 
-// Detalle de un viaje: asientos ocupados/libres y sus reservas
 exports.mostrarViaje = async (req, res) => {
   const { id } = req.params;
   try {
@@ -162,15 +187,17 @@ exports.mostrarViaje = async (req, res) => {
     if (viajeRows.length === 0) return res.status(404).send('Viaje no encontrado');
     const viaje = viajeRows[0];
 
-    const [reservas] = await pool.query(`
-      SELECT res.*, p.metodo AS metodo_pago, p.estado AS estado_pago, p.id AS pago_id
+    const [reservasRows] = await pool.query(`
+      SELECT res.*, p.metodo AS metodo_pago, p.estado AS estado_pago, p.id AS pago_id,
+             p.voucher, p.monto AS monto_pago
       FROM reservas res
       LEFT JOIN pagos p ON p.id = (SELECT id FROM pagos WHERE reserva_id = res.id ORDER BY id DESC LIMIT 1)
       WHERE res.viaje_id = ?
       ORDER BY res.asiento ASC
     `, [id]);
 
-    const asientosOcupados = reservas.filter(r => r.estado !== 'cancelado').map(r => r.asiento);
+    const reservas = reservasRows.map(enriquecerReserva);
+    const asientosOcupados = expandirAsientosReservados(reservas.filter(r => r.estado !== 'cancelado'));
 
     res.render('admin/viaje', { viaje, reservas, asientosOcupados });
   } catch (error) {
@@ -182,7 +209,7 @@ exports.mostrarViaje = async (req, res) => {
 // ---------- PAGOS Y RESERVAS ----------
 
 exports.confirmarPago = async (req, res) => {
-  const { id } = req.params; // id del pago
+  const { id } = req.params;
   const connection = await pool.getConnection();
 
   try {
@@ -197,6 +224,7 @@ exports.confirmarPago = async (req, res) => {
       INNER JOIN viajes v ON res.viaje_id = v.id
       INNER JOIN rutas r ON v.ruta_id = r.id
       WHERE p.id = ?
+      FOR UPDATE
     `, [id]);
 
     if (pagoRows.length === 0) {
@@ -204,7 +232,7 @@ exports.confirmarPago = async (req, res) => {
       return res.status(404).send('Pago no encontrado');
     }
 
-    const pago = pagoRows[0];
+    const pago = enriquecerReserva(pagoRows[0]);
 
     await connection.query("UPDATE pagos SET estado = 'confirmado' WHERE id = ?", [id]);
     await connection.query("UPDATE reservas SET estado = 'pagado' WHERE id = ?", [pago.reserva_id]);
@@ -222,7 +250,6 @@ exports.confirmarPago = async (req, res) => {
       linkWhatsapp,
       mensajeCliente
     });
-
   } catch (error) {
     await connection.rollback();
     console.error('Error al confirmar pago:', error);
@@ -237,9 +264,7 @@ exports.cancelarReserva = async (req, res) => {
 
   try {
     await pool.query("UPDATE reservas SET estado = 'cancelado' WHERE id = ?", [id]);
-
     res.redirect(req.get('Referrer') || '/admin/dashboard');
-
   } catch (error) {
     console.error('Error al cancelar reserva:', error);
     res.status(500).send('Error al cancelar la reserva');
@@ -249,18 +274,36 @@ exports.cancelarReserva = async (req, res) => {
 // ---------- REPORTES ----------
 
 exports.mostrarReportes = async (req, res) => {
+  const countSeats = seatCountSql('res');
+
   try {
     const [filas] = await pool.query(`
-      SELECT v.id, v.fecha, v.hora, r.origen, r.destino, v.precio,
-        COUNT(CASE WHEN res.estado = 'pagado' THEN 1 END) AS asientos_pagados,
-        COALESCE(SUM(CASE WHEN res.estado = 'pagado' THEN v.precio END), 0) AS ingresos
+      SELECT v.id, v.fecha, v.hora, v.estado, r.origen, r.destino, v.precio,
+        COALESCE(SUM(CASE WHEN res.estado = 'pagado' THEN ${countSeats} ELSE 0 END), 0) AS asientos_pagados,
+        COALESCE(SUM(CASE WHEN res.estado = 'pagado' THEN ${countSeats} * v.precio ELSE 0 END), 0) AS ingresos,
+        COUNT(CASE WHEN p.estado = 'pendiente' THEN 1 END) AS pagos_pendientes
       FROM viajes v
       INNER JOIN rutas r ON v.ruta_id = r.id
       LEFT JOIN reservas res ON res.viaje_id = v.id
+      LEFT JOIN pagos p ON p.id = (SELECT id FROM pagos WHERE reserva_id = res.id ORDER BY id DESC LIMIT 1)
       GROUP BY v.id
       ORDER BY v.fecha DESC
     `);
-    res.render('admin/reportes', { filas });
+
+    const resumen = filas.reduce((acc, fila) => {
+      acc.totalIngresos += Number(fila.ingresos || 0);
+      acc.asientosPagados += Number(fila.asientos_pagados || 0);
+      acc.pagosPendientes += Number(fila.pagos_pendientes || 0);
+      if (fila.estado === 'programado') acc.viajesProgramados += 1;
+      return acc;
+    }, {
+      totalIngresos: 0,
+      asientosPagados: 0,
+      viajesProgramados: 0,
+      pagosPendientes: 0
+    });
+
+    res.render('admin/reportes', { filas, resumen });
   } catch (error) {
     console.error('Error al cargar reportes:', error);
     res.status(500).send('Error al cargar los reportes');

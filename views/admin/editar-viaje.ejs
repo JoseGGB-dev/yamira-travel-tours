@@ -1,27 +1,66 @@
-<%- include('../partials/header') %>
+<%- include('../partials/admin-header', { activeNav: 'viajes' }) %>
 
-<h1>Editar viaje</h1>
+<section class="admin-shell">
+  <div class="admin-page-head d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <div>
+      <a href="/admin/dashboard" class="admin-back-link">
+        <i class="bi bi-arrow-left me-1"></i>Volver al panel
+      </a>
+      <h1 class="fw-bold mb-1 mt-2">
+        <i class="bi bi-pencil-square me-2 text-primary"></i>Editar viaje
+      </h1>
+      <p class="text-muted mb-0 small">Actualiza fecha, hora, precio o estado del viaje.</p>
+    </div>
+  </div>
 
-<form method="POST" action="/admin/viajes/<%= viaje.id %>/editar">
-  <label>Fecha</label>
-  <input type="date" name="fecha" value="<%= new Date(viaje.fecha).toISOString().split('T')[0] %>" required>
+  <div class="row justify-content-center">
+    <div class="col-xl-8">
+      <div class="card admin-card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 pt-3">
+          <h5 class="fw-bold mb-0"><i class="bi bi-bus-front me-2 text-primary"></i>Datos del viaje</h5>
+        </div>
+        <div class="card-body">
+          <% if (error) { %>
+            <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i><%= error %></div>
+          <% } %>
 
-  <label>Hora</label>
-  <input type="time" name="hora" value="<%= viaje.hora %>" required>
+          <form method="POST" action="/admin/viajes/<%= viaje.id %>/editar" class="admin-form">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Fecha</label>
+                <input type="date" name="fecha" class="form-control" value="<%= new Date(viaje.fecha).toISOString().split('T')[0] %>" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Hora</label>
+                <input type="time" name="hora" class="form-control" value="<%= viaje.hora %>" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Precio (S/)</label>
+                <input type="number" name="precio" class="form-control" step="0.01" min="0.01" value="<%= viaje.precio %>" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Estado</label>
+                <select name="estado" class="form-select" required>
+                  <option value="programado" <%= viaje.estado === 'programado' ? 'selected' : '' %>>Programado</option>
+                  <option value="completado" <%= viaje.estado === 'completado' ? 'selected' : '' %>>Completado</option>
+                  <option value="cancelado" <%= viaje.estado === 'cancelado' ? 'selected' : '' %>>Cancelado</option>
+                </select>
+              </div>
+            </div>
 
-  <label>Precio (S/)</label>
-  <input type="number" name="precio" step="0.01" min="0" value="<%= viaje.precio %>" required>
+            <div class="d-flex gap-2 flex-wrap justify-content-end mt-4">
+              <a href="/admin/dashboard" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Volver al panel
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-1"></i>Guardar cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <label>Estado</label>
-  <select name="estado" required>
-    <option value="programado" <%= viaje.estado === 'programado' ? 'selected' : '' %>>Programado</option>
-    <option value="completado" <%= viaje.estado === 'completado' ? 'selected' : '' %>>Completado</option>
-    <option value="cancelado" <%= viaje.estado === 'cancelado' ? 'selected' : '' %>>Cancelado</option>
-  </select>
-
-  <button type="submit" class="boton">Guardar cambios</button>
-</form>
-
-<a href="/admin/dashboard">&larr; Volver al panel</a>
-
-<%- include('../partials/footer') %>
+<%- include('../partials/admin-footer') %>

@@ -1,29 +1,144 @@
-<%- include('../partials/header') %>
+<%- include('../partials/admin-header', { activeNav: 'reportes' }) %>
 
-<h1>Reportes de ingresos</h1>
+<section class="admin-shell">
+  <div class="admin-page-head d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <div>
+      <a href="/admin/dashboard" class="admin-back-link">
+        <i class="bi bi-arrow-left me-1"></i>Volver al panel
+      </a>
+      <h1 class="fw-bold mb-1 mt-2">
+        <i class="bi bi-bar-chart me-2 text-primary"></i>Reportes de ingresos
+      </h1>
+      <p class="text-muted mb-0 small">Resumen financiero por viaje y pagos pendientes de revision.</p>
+    </div>
+  </div>
 
-<table class="tabla-admin">
-  <thead>
-    <tr><th>Ruta</th><th>Fecha</th><th>Hora</th><th>Precio</th><th>Asientos pagados</th><th>Ingresos</th></tr>
-  </thead>
-  <tbody>
-    <% let totalGeneral = 0; %>
-    <% filas.forEach(f => { totalGeneral += Number(f.ingresos); %>
-      <tr>
-        <td><%= f.origen %> &rarr; <%= f.destino %></td>
-        <td><%= new Date(f.fecha).toLocaleDateString('es-PE') %></td>
-        <td><%= f.hora %></td>
-        <td>S/ <%= f.precio %></td>
-        <td><%= f.asientos_pagados %></td>
-        <td>S/ <%= Number(f.ingresos).toFixed(2) %></td>
-      </tr>
-    <% }) %>
-  </tbody>
-  <tfoot>
-    <tr><td colspan="5"><strong>Total general</strong></td><td><strong>S/ <%= totalGeneral.toFixed(2) %></strong></td></tr>
-  </tfoot>
-</table>
+  <div class="row g-3 mb-4">
+    <div class="col-md-6 col-xl-3">
+      <div class="kpi-card kpi-success">
+        <div class="kpi-icon"><i class="bi bi-cash-coin"></i></div>
+        <div>
+          <div class="kpi-label">Total de ingresos</div>
+          <div class="kpi-value">S/ <%= Number(resumen.totalIngresos).toFixed(2) %></div>
+          <div class="kpi-sub">pagos confirmados</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+      <div class="kpi-card kpi-info">
+        <div class="kpi-icon"><i class="bi bi-person-check"></i></div>
+        <div>
+          <div class="kpi-label">Asientos pagados</div>
+          <div class="kpi-value"><%= resumen.asientosPagados %></div>
+          <div class="kpi-sub">asientos vendidos</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+      <div class="kpi-card kpi-primary">
+        <div class="kpi-icon"><i class="bi bi-calendar2-week"></i></div>
+        <div>
+          <div class="kpi-label">Viajes programados</div>
+          <div class="kpi-value"><%= resumen.viajesProgramados %></div>
+          <div class="kpi-sub">en el sistema</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+      <div class="kpi-card kpi-warning">
+        <div class="kpi-icon"><i class="bi bi-hourglass-split"></i></div>
+        <div>
+          <div class="kpi-label">Pagos pendientes</div>
+          <div class="kpi-value"><%= resumen.pagosPendientes %></div>
+          <div class="kpi-sub">por confirmar</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<a href="/admin/dashboard">&larr; Volver al panel</a>
+  <div class="admin-total-band mb-4">
+    <div>
+      <span>Total general confirmado</span>
+      <strong>S/ <%= Number(resumen.totalIngresos).toFixed(2) %></strong>
+    </div>
+    <a href="/admin/dashboard?estado=pagado" class="btn btn-light btn-sm">
+      <i class="bi bi-check2-circle me-1"></i>Ver reservas pagadas
+    </a>
+  </div>
 
-<%- include('../partials/footer') %>
+  <div class="card admin-card border-0 shadow-sm">
+    <div class="card-header bg-white border-0 pt-3 pb-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <h5 class="mb-0 fw-bold"><i class="bi bi-table me-2 text-primary"></i>Ingresos por viaje</h5>
+      <div class="input-group input-group-sm admin-search">
+        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+        <input type="text" id="buscadorReportes" class="form-control border-start-0" placeholder="Buscar por ruta o fecha...">
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table admin-table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Ruta</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th class="text-end">Precio</th>
+              <th class="text-center">Asientos pagados</th>
+              <th class="text-center">Pagos pendientes</th>
+              <th class="text-end">Ingresos</th>
+            </tr>
+          </thead>
+          <tbody id="tablaReportes">
+            <% if (filas.length === 0) { %>
+              <tr>
+                <td colspan="7" class="text-center py-5 text-muted">
+                  <i class="bi bi-clipboard-data display-6 d-block mb-2"></i>
+                  Aun no hay viajes para reportar.
+                </td>
+              </tr>
+            <% } %>
+            <% filas.forEach(function(f) { %>
+              <tr>
+                <td><span class="route-pill"><%= f.origen %> <i class="bi bi-arrow-right mx-1"></i> <%= f.destino %></span></td>
+                <td><%= new Date(f.fecha).toLocaleDateString('es-PE') %></td>
+                <td><%= f.hora %></td>
+                <td class="text-end">S/ <%= Number(f.precio).toFixed(2) %></td>
+                <td class="text-center"><span class="badge rounded-pill bg-success"><%= f.asientos_pagados %></span></td>
+                <td class="text-center">
+                  <% if (Number(f.pagos_pendientes) > 0) { %>
+                    <span class="badge rounded-pill bg-warning text-dark"><%= f.pagos_pendientes %></span>
+                  <% } else { %>
+                    <span class="text-muted small">0</span>
+                  <% } %>
+                </td>
+                <td class="text-end fw-bold">S/ <%= Number(f.ingresos).toFixed(2) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="6" class="text-end fw-bold">Total general</td>
+              <td class="text-end fw-bold text-success">S/ <%= Number(resumen.totalIngresos).toFixed(2) %></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function() {
+    var input = document.getElementById('buscadorReportes');
+    var tbody = document.getElementById('tablaReportes');
+    if (!input || !tbody) return;
+    input.addEventListener('input', function() {
+      var q = this.value.toLowerCase().trim();
+      Array.prototype.forEach.call(tbody.querySelectorAll('tr'), function(tr) {
+        tr.style.display = tr.textContent.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
+      });
+    });
+  })();
+</script>
+
+<%- include('../partials/admin-footer') %>

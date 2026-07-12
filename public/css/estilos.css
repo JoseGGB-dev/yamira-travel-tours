@@ -356,8 +356,9 @@ body {
   cursor: pointer;
   transition: background 0.15s, color 0.15s, transform 0.1s;
 }
-.asiento:hover:not(.ocupado) { background: #cfe2ff; transform: scale(1.05); }
-.asiento.ocupado { background: #dee2e6; border-color: #adb5bd; color: #6c757d; cursor: not-allowed; }
+.asiento:hover:not(.ocupado):not(.fuera-rango) { background: #cfe2ff; transform: scale(1.05); }
+.asiento.ocupado,
+.asiento.fuera-rango { background: #dee2e6; border-color: #adb5bd; color: #6c757d; cursor: not-allowed; }
 .asiento.seleccionado { background: #0b5ed7; color: #fff; border-color: #0b5ed7; }
 .asiento-muestra {
   display: inline-block; width: 20px; height: 20px;
@@ -366,6 +367,29 @@ body {
 .asiento-muestra.libre { background: #fff; border-color: #0b5ed7; }
 .asiento-muestra.selec { background: #0b5ed7; border-color: #0b5ed7; }
 .asiento-muestra.ocup  { background: #dee2e6; border-color: #adb5bd; }
+.reserva-total-box,
+.selected-seat-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid #dbe7f5;
+  background: #f8fbff;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.reserva-total-box span,
+.selected-seat-summary span {
+  color: #6c757d;
+  font-weight: 600;
+}
+.reserva-total-box strong {
+  color: #198754;
+  font-size: 1.35rem;
+}
+.selected-seat-summary strong {
+  color: #0b5ed7;
+}
 
 /* ─── CÓDIGO RESERVA ──────────────────────────────────────── */
 .codigo-reserva {

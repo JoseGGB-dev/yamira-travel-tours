@@ -1,5 +1,26 @@
 <%- include('partials/header') %>
 
+<%
+  const datos = formData || {};
+  const seleccionInicial = datos.asiento || '';
+  const cantidadInicial = Number(datos.cantidad_asientos || 1);
+  const capacidad = Number(viaje.capacidad || 18);
+  const disponibles = Math.max(0, capacidad - 1 - asientosOcupados.length);
+  const cantidadValor = disponibles > 0 ? Math.min(Math.max(cantidadInicial, 1), disponibles) : 1;
+  const precio = Number(viaje.precio || 0);
+
+  function renderAsiento(num) {
+    const ocupado = asientosOcupados.includes(num);
+    const fueraRango = num > capacidad;
+    const seleccionado = seleccionInicial.split(',').map(Number).includes(num);
+    return '<button type="button" class="asiento ' +
+      (ocupado ? 'ocupado ' : '') +
+      (fueraRango ? 'fuera-rango ' : '') +
+      (seleccionado ? 'seleccionado ' : '') +
+      '" data-asiento="' + num + '" ' + (ocupado || fueraRango ? 'disabled' : '') + '>' + num + '</button>';
+  }
+%>
+
 <section class="py-5">
   <div class="container">
     <div class="row justify-content-center">
@@ -22,7 +43,7 @@
           <div class="card-body d-flex flex-wrap gap-4">
             <span><i class="bi bi-calendar3 me-1 text-primary"></i><%= new Date(viaje.fecha).toLocaleDateString('es-PE', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) %></span>
             <span><i class="bi bi-clock me-1 text-primary"></i><%= viaje.hora %></span>
-            <span><i class="bi bi-cash me-1 text-success"></i><strong>S/ <%= Number(viaje.precio).toFixed(2) %></strong></span>
+            <span><i class="bi bi-cash me-1 text-success"></i><strong>S/ <%= precio.toFixed(2) %></strong> por asiento</span>
           </div>
         </div>
 
@@ -30,21 +51,26 @@
           <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i><%= error %></div>
         <% } %>
 
-        <%
-          function renderAsiento(num) {
-            const ocupado = asientosOcupados.includes(num);
-            return '<button type="button" class="asiento ' + (ocupado ? 'ocupado' : '') +
-                   '" data-asiento="' + num + '" ' + (ocupado ? 'disabled' : '') + '>' + num + '</button>';
-          }
-        %>
-
-        <form method="POST" action="/reservar/<%= viaje.id %>" id="formReserva">
+        <form method="POST" action="/reservar/<%= viaje.id %>" id="formReserva" data-precio="<%= precio %>">
 
           <div class="card shadow-sm border-0 mb-4">
             <div class="card-header bg-light fw-bold">
-              <i class="bi bi-grid-3x3-gap me-2"></i>Paso 1: Elige tu asiento
+              <i class="bi bi-grid-3x3-gap me-2"></i>Paso 1: Elige tus asientos
             </div>
             <div class="card-body">
+              <div class="row g-3 align-items-end mb-3">
+                <div class="col-md-5">
+                  <label class="form-label fw-semibold" for="cantidadAsientos">Cantidad de asientos</label>
+                  <input type="number" class="form-control" id="cantidadAsientos" name="cantidad_asientos" min="1" max="<%= Math.max(disponibles, 1) %>" value="<%= cantidadValor %>" <%= disponibles === 0 ? 'disabled' : '' %> required>
+                </div>
+                <div class="col-md-7">
+                  <div class="reserva-total-box">
+                    <span>Total a pagar</span>
+                    <strong id="totalReserva">S/ <%= (precio * cantidadValor).toFixed(2) %></strong>
+                  </div>
+                </div>
+              </div>
+
               <div class="leyenda-asientos d-flex gap-3 mb-3 flex-wrap">
                 <span class="d-flex align-items-center gap-1"><span class="asiento-muestra libre"></span>Disponible</span>
                 <span class="d-flex align-items-center gap-1"><span class="asiento-muestra selec"></span>Seleccionado</span>
@@ -52,7 +78,7 @@
               </div>
 
               <div class="mapa-asientos-bus">
-                <div class="frente-vehiculo">🚐 Conductor</div>
+                <div class="frente-vehiculo"><i class="bi bi-person-badge me-1"></i>Conductor</div>
                 <div class="fila fila-derecha"><%- renderAsiento(2) %><%- renderAsiento(3) %></div>
                 <div class="fila fila-izquierda"><%- renderAsiento(4) %><%- renderAsiento(5) %><%- renderAsiento(6) %></div>
                 <div class="fila fila-centro"><%- renderAsiento(7) %><%- renderAsiento(8) %><div class="pasillo"></div><%- renderAsiento(9) %><%- renderAsiento(10) %></div>
@@ -60,9 +86,13 @@
                 <div class="fila fila-centro fila-ultima"><%- renderAsiento(15) %><%- renderAsiento(16) %><%- renderAsiento(17) %><%- renderAsiento(18) %></div>
               </div>
 
-              <input type="hidden" name="asiento" id="asientoSeleccionado" required>
+              <input type="hidden" name="asiento" id="asientoSeleccionado" value="<%= seleccionInicial %>" required>
+              <div class="selected-seat-summary mt-3">
+                <span>Asientos seleccionados</span>
+                <strong id="resumenSeleccion">Ninguno</strong>
+              </div>
               <div id="textoAsiento" class="alert alert-warning mt-3 py-2">
-                <i class="bi bi-cursor me-2"></i>Haz clic en un asiento disponible para seleccionarlo.
+                <i class="bi bi-cursor me-2"></i><%= disponibles === 0 ? 'No hay asientos disponibles para este viaje.' : 'Selecciona los asientos disponibles en el mapa.' %>
               </div>
             </div>
           </div>
@@ -74,27 +104,28 @@
             <div class="card-body">
               <div class="mb-3">
                 <label class="form-label fw-semibold">Nombre completo</label>
-                <input type="text" name="nombre_cliente" class="form-control" placeholder="Ej: Juan Pérez García" required>
+                <input type="text" name="nombre_cliente" class="form-control" placeholder="Ej: Juan Perez Garcia" value="<%= datos.nombre_cliente || '' %>" required>
               </div>
               <div class="row g-3">
                 <div class="col-md-6">
                   <label class="form-label fw-semibold">DNI</label>
-                  <input type="text" name="dni" class="form-control" pattern="[0-9]{8}" maxlength="8" placeholder="12345678" title="8 dígitos" required>
+                  <input type="text" name="dni" class="form-control" pattern="[0-9]{8}" maxlength="8" placeholder="12345678" title="8 digitos" value="<%= datos.dni || '' %>" required>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold">Celular</label>
-                  <input type="text" name="celular" class="form-control" pattern="[0-9]{9}" maxlength="9" placeholder="987654321" title="9 dígitos" required>
+                  <label class="form-label fw-semibold" for="celularReserva">Celular peruano</label>
+                  <input type="text" name="celular" id="celularReserva" class="form-control" pattern="9[0-9]{8}" maxlength="9" inputmode="numeric" placeholder="987654321" title="Debe empezar con 9 y tener 9 digitos" value="<%= datos.celular || '' %>" required>
+                  <div id="errorCelular" class="invalid-feedback d-none">El celular debe empezar con 9 y tener 9 digitos.</div>
                 </div>
               </div>
               <div class="mt-3">
                 <label class="form-label fw-semibold">Punto de embarque</label>
-                <input type="text" name="punto_embarque" class="form-control" placeholder="Ej: Paradero Puente Piedra" required>
+                <input type="text" name="punto_embarque" class="form-control" placeholder="Ej: Paradero Puente Piedra" value="<%= datos.punto_embarque || '' %>" required>
               </div>
             </div>
           </div>
 
           <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">
+            <button type="submit" class="btn btn-primary btn-lg" <%= disponibles === 0 ? 'disabled' : '' %>>
               <i class="bi bi-check-circle me-2"></i>Confirmar reserva
             </button>
           </div>

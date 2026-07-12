@@ -17,7 +17,8 @@
             <table class="table table-bordered table-sm text-start mb-4">
               <tr><td class="fw-semibold text-muted">Código de reserva</td><td><strong><%= reserva.codigo_reserva %></strong></td></tr>
               <tr><td class="fw-semibold text-muted">Método de pago</td><td><%= pago ? pago.metodo : '-' %></td></tr>
-              <tr><td class="fw-semibold text-muted">Monto</td><td>S/ <%= Number(reserva.precio).toFixed(2) %></td></tr>
+              <tr><td class="fw-semibold text-muted">Asientos</td><td><%= reserva.asiento %></td></tr>
+              <tr><td class="fw-semibold text-muted">Monto</td><td>S/ <%= Number(reserva.monto_total).toFixed(2) %></td></tr>
               <tr><td class="fw-semibold text-muted">Estado</td><td><span class="badge bg-warning text-dark">En revisión</span></td></tr>
             </table>
 

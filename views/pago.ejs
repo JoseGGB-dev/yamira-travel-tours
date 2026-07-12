@@ -24,12 +24,13 @@
                 <p class="fw-semibold mb-0"><%= reserva.nombre_cliente %></p>
               </div>
               <div class="col-sm-6">
-                <p class="mb-1 text-muted small">Asiento</p>
-                <p class="fw-semibold mb-0"><%= reserva.asiento %></p>
+                <p class="mb-1 text-muted small">Asientos</p>
+                <p class="fw-semibold mb-0"><%= reserva.asiento %> <span class="text-muted">(<%= reserva.cantidad_asientos %>)</span></p>
               </div>
               <div class="col-12">
                 <p class="mb-1 text-muted small">Monto a pagar</p>
-                <p class="fs-4 fw-bold text-success mb-0">S/ <%= Number(reserva.precio).toFixed(2) %></p>
+                <p class="fs-4 fw-bold text-success mb-0">S/ <%= Number(reserva.monto_total).toFixed(2) %></p>
+                <p class="text-muted small mb-0">S/ <%= Number(reserva.precio).toFixed(2) %> x <%= reserva.cantidad_asientos %> asiento(s)</p>
               </div>
             </div>
           </div>

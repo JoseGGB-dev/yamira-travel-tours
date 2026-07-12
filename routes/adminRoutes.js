@@ -9,6 +9,7 @@ router.get('/logout', adminController.cerrarSesion);
 
 router.get('/dashboard', requireAdmin, adminController.mostrarDashboard);
 
+router.get('/viajes', requireAdmin, adminController.mostrarDashboard);
 router.get('/viajes/nuevo', requireAdmin, adminController.mostrarNuevoViaje);
 router.post('/viajes/nuevo', requireAdmin, adminController.crearViaje);
 router.get('/viajes/:id', requireAdmin, adminController.mostrarViaje);

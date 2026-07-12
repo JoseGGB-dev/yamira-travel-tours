@@ -18,10 +18,10 @@
               <tr><td class="fw-semibold text-muted">Ruta</td><td><%= reserva.origen %> &rarr; <%= reserva.destino %></td></tr>
               <tr><td class="fw-semibold text-muted">Fecha</td><td><%= new Date(reserva.fecha).toLocaleDateString('es-PE', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) %></td></tr>
               <tr><td class="fw-semibold text-muted">Hora</td><td><%= reserva.hora %></td></tr>
-              <tr><td class="fw-semibold text-muted">Asiento</td><td><%= reserva.asiento %></td></tr>
+              <tr><td class="fw-semibold text-muted">Asientos</td><td><%= reserva.asiento %> (<%= reserva.cantidad_asientos %>)</td></tr>
               <tr><td class="fw-semibold text-muted">Pasajero</td><td><%= reserva.nombre_cliente %></td></tr>
               <tr><td class="fw-semibold text-muted">Punto de embarque</td><td><%= reserva.punto_embarque %></td></tr>
-              <tr><td class="fw-semibold text-muted">Monto a pagar</td><td><strong>S/ <%= Number(reserva.precio).toFixed(2) %></strong></td></tr>
+              <tr><td class="fw-semibold text-muted">Monto a pagar</td><td><strong>S/ <%= Number(reserva.monto_total).toFixed(2) %></strong></td></tr>
               <tr><td class="fw-semibold text-muted">Estado</td><td><span class="badge bg-warning text-dark"><%= reserva.estado %></span></td></tr>
             </table>
 

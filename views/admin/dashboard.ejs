@@ -1,4 +1,4 @@
-<%- include('../partials/header') %>
+<%- include('../partials/admin-header', { activeNav: 'dashboard' }) %>
 
 <%
   function badgeViaje(estado) {
@@ -7,314 +7,322 @@
     return 'danger';
   }
   function badgeReserva(estado) {
-    if (estado === 'pagado')    return 'success';
+    if (estado === 'pagado') return 'success';
     if (estado === 'cancelado') return 'danger';
-    if (estado === 'vencido')   return 'secondary';
+    if (estado === 'vencido') return 'secondary';
     return 'warning';
   }
   function badgePago(estado) {
     if (estado === 'confirmado') return 'success';
-    if (estado === 'rechazado')  return 'danger';
+    if (estado === 'rechazado') return 'danger';
     return 'warning';
   }
   function textoWarning(estado) {
-    return (estado === 'pendiente') ? 'text-dark' : '';
+    return estado === 'pendiente' ? 'text-dark' : '';
   }
 
-  // KPIs
-  var totalViajes      = viajes.length;
-  var viajesProgramados= viajes.filter(function(v){ return v.estado === 'programado'; }).length;
-  var totalReservas    = reservas.length;
-  var reservasPendientes = reservas.filter(function(r){ return r.estado === 'pendiente'; }).length;
-  var reservasPagadas    = reservas.filter(function(r){ return r.estado === 'pagado'; }).length;
-  var reservasCanceladas = reservas.filter(function(r){ return r.estado === 'cancelado'; }).length;
-  var pagosPorConfirmar  = reservas.filter(function(r){ return r.pago_id && r.estado_pago === 'pendiente'; }).length;
+  var totalViajes = viajes.length;
+  var viajesProgramados = viajes.filter(function(v) { return v.estado === 'programado'; }).length;
+  var totalReservas = reservas.length;
+  var reservasPendientes = reservas.filter(function(r) { return r.estado === 'pendiente'; }).length;
+  var reservasPagadas = reservas.filter(function(r) { return r.estado === 'pagado'; }).length;
+  var reservasCanceladas = reservas.filter(function(r) { return r.estado === 'cancelado'; }).length;
+  var pagosPorConfirmar = reservas.filter(function(r) { return r.pago_id && r.estado_pago === 'pendiente'; }).length;
 %>
 
-<link rel="stylesheet" href="/css/admin.css">
-
 <section class="admin-shell">
-  <div class="container-fluid px-3 px-lg-4">
-
-    <!-- Encabezado -->
-    <div class="admin-topbar d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-      <div>
-        <h2 class="fw-bold mb-1">
-          <i class="bi bi-speedometer2 me-2 text-primary"></i>Panel administrador
-        </h2>
-        <p class="text-muted mb-0 small">Resumen de viajes, reservas y pagos en tiempo real.</p>
-      </div>
-      <div class="d-flex gap-2 flex-wrap">
-        <a href="/admin/viajes/nuevo" class="btn btn-primary">
-          <i class="bi bi-plus-circle me-1"></i>Nuevo viaje
-        </a>
-        <a href="/admin/reportes" class="btn btn-outline-secondary">
-          <i class="bi bi-bar-chart me-1"></i>Reportes
-        </a>
-        <a href="/admin/logout" class="btn btn-outline-danger">
-          <i class="bi bi-box-arrow-right me-1"></i>Salir
-        </a>
-      </div>
+  <div class="admin-page-head d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <div>
+      <h1 class="fw-bold mb-1">
+        <i class="bi bi-speedometer2 me-2 text-primary"></i>Panel administrador
+      </h1>
+      <p class="text-muted mb-0 small">Reservas, pagos y viajes en una vista interna de trabajo.</p>
     </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <a href="/admin/viajes/nuevo" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i>Nuevo viaje
+      </a>
+      <a href="/admin/reportes" class="btn btn-outline-secondary">
+        <i class="bi bi-bar-chart me-1"></i>Reportes
+      </a>
+    </div>
+  </div>
 
-    <!-- KPIs -->
-    <div class="row g-3 mb-4">
-      <div class="col-6 col-md-4 col-xl-2">
-        <div class="kpi-card kpi-primary">
-          <div class="kpi-icon"><i class="bi bi-bus-front"></i></div>
-          <div>
-            <div class="kpi-label">Viajes</div>
-            <div class="kpi-value"><%= totalViajes %></div>
-            <div class="kpi-sub"><%= viajesProgramados %> programados</div>
-          </div>
-        </div>
-      </div>
-      <div class="col-6 col-md-4 col-xl-2">
-        <div class="kpi-card kpi-info">
-          <div class="kpi-icon"><i class="bi bi-ticket-perforated"></i></div>
-          <div>
-            <div class="kpi-label">Reservas</div>
-            <div class="kpi-value"><%= totalReservas %></div>
-            <div class="kpi-sub">en total</div>
-          </div>
-        </div>
-      </div>
-      <div class="col-6 col-md-4 col-xl-2">
-        <div class="kpi-card kpi-warning">
-          <div class="kpi-icon"><i class="bi bi-hourglass-split"></i></div>
-          <div>
-            <div class="kpi-label">Pendientes</div>
-            <div class="kpi-value"><%= reservasPendientes %></div>
-            <div class="kpi-sub">por revisar</div>
-          </div>
-        </div>
-      </div>
-      <div class="col-6 col-md-4 col-xl-2">
-        <div class="kpi-card kpi-success">
-          <div class="kpi-icon"><i class="bi bi-check2-circle"></i></div>
-          <div>
-            <div class="kpi-label">Pagadas</div>
-            <div class="kpi-value"><%= reservasPagadas %></div>
-            <div class="kpi-sub">confirmadas</div>
-          </div>
-        </div>
-      </div>
-      <div class="col-6 col-md-4 col-xl-2">
-        <div class="kpi-card kpi-danger">
-          <div class="kpi-icon"><i class="bi bi-x-octagon"></i></div>
-          <div>
-            <div class="kpi-label">Canceladas</div>
-            <div class="kpi-value"><%= reservasCanceladas %></div>
-            <div class="kpi-sub">anuladas</div>
-          </div>
-        </div>
-      </div>
-      <div class="col-6 col-md-4 col-xl-2">
-        <div class="kpi-card kpi-gold">
-          <div class="kpi-icon"><i class="bi bi-whatsapp"></i></div>
-          <div>
-            <div class="kpi-label">Por confirmar</div>
-            <div class="kpi-value"><%= pagosPorConfirmar %></div>
-            <div class="kpi-sub">pagos enviados</div>
-          </div>
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="kpi-card kpi-primary">
+        <div class="kpi-icon"><i class="bi bi-bus-front"></i></div>
+        <div>
+          <div class="kpi-label">Viajes</div>
+          <div class="kpi-value"><%= totalViajes %></div>
+          <div class="kpi-sub"><%= viajesProgramados %> programados</div>
         </div>
       </div>
     </div>
-
-    <!-- Tabs -->
-    <ul class="nav nav-pills admin-tabs mb-3" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-reservas" type="button">
-          <i class="bi bi-ticket-perforated me-1"></i>Reservas
-          <span class="badge bg-light text-dark ms-1"><%= totalReservas %></span>
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-viajes" type="button">
-          <i class="bi bi-bus-front me-1"></i>Viajes
-          <span class="badge bg-light text-dark ms-1"><%= totalViajes %></span>
-        </button>
-      </li>
-    </ul>
-
-    <div class="tab-content">
-
-      <!-- ===== Reservas ===== -->
-      <div class="tab-pane fade show active" id="tab-reservas">
-        <div class="card admin-card border-0 shadow-sm">
-          <div class="card-header bg-white border-0 pt-3 pb-0">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-              <div class="d-flex gap-2 flex-wrap align-items-center">
-                <span class="fw-semibold text-muted small"><i class="bi bi-funnel me-1"></i>Filtrar:</span>
-                <a href="/admin/dashboard"
-                   class="btn btn-sm <%= filtroEstado === '' ? 'btn-dark' : 'btn-outline-secondary' %>">Todas</a>
-                <a href="/admin/dashboard?estado=pendiente"
-                   class="btn btn-sm <%= filtroEstado === 'pendiente' ? 'btn-warning text-dark' : 'btn-outline-warning' %>">Pendientes</a>
-                <a href="/admin/dashboard?estado=pagado"
-                   class="btn btn-sm <%= filtroEstado === 'pagado' ? 'btn-success' : 'btn-outline-success' %>">Pagadas</a>
-                <a href="/admin/dashboard?estado=cancelado"
-                   class="btn btn-sm <%= filtroEstado === 'cancelado' ? 'btn-danger' : 'btn-outline-danger' %>">Canceladas</a>
-              </div>
-              <div class="input-group input-group-sm admin-search">
-                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-                <input type="text" id="buscadorReservas" class="form-control border-start-0"
-                       placeholder="Buscar por cliente, DNI, código, celular o ruta...">
-              </div>
-            </div>
-          </div>
-          <div class="card-body p-0">
-            <div class="table-responsive">
-              <table class="table admin-table align-middle mb-0">
-                <thead>
-                  <tr>
-                    <th>Código</th>
-                    <th>Cliente</th>
-                    <th>Contacto</th>
-                    <th>Ruta</th>
-                    <th>Fecha</th>
-                    <th class="text-center">Asiento</th>
-                    <th>Estado</th>
-                    <th>Pago</th>
-                    <th class="text-center">Voucher</th>
-                    <th class="text-end">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody id="tablaReservas">
-                  <% if (reservas.length === 0) { %>
-                    <tr><td colspan="10" class="text-center py-5 text-muted">
-                      <i class="bi bi-inbox display-6 d-block mb-2"></i>
-                      No hay reservas para este filtro.
-                    </td></tr>
-                  <% } %>
-                  <% reservas.forEach(function(r) { %>
-                    <tr>
-                      <td><code class="text-primary"><%= r.codigo_reserva %></code></td>
-                      <td>
-                        <div class="fw-semibold"><%= r.nombre_cliente %></div>
-                        <div class="text-muted small">DNI <%= r.dni %></div>
-                      </td>
-                      <td>
-                        <a href="https://wa.me/51<%= r.celular %>" target="_blank"
-                           class="text-decoration-none text-success">
-                          <i class="bi bi-whatsapp"></i> <%= r.celular %>
-                        </a>
-                      </td>
-                      <td>
-                        <span class="route-pill"><%= r.origen %> <i class="bi bi-arrow-right mx-1"></i> <%= r.destino %></span>
-                      </td>
-                      <td><%= new Date(r.fecha).toLocaleDateString('es-PE') %></td>
-                      <td class="text-center">
-                        <span class="seat-chip"><%= r.asiento %></span>
-                      </td>
-                      <td>
-                        <span class="badge rounded-pill bg-<%= badgeReserva(r.estado) %> <%= textoWarning(r.estado) %>">
-                          <%= r.estado %>
-                        </span>
-                      </td>
-                      <td>
-                        <% if (r.metodo_pago) { %>
-                          <div class="small fw-semibold text-uppercase"><%= r.metodo_pago %></div>
-                          <span class="badge rounded-pill bg-<%= badgePago(r.estado_pago) %> <%= textoWarning(r.estado_pago) %>">
-                            <%= r.estado_pago %>
-                          </span>
-                        <% } else { %>
-                          <span class="text-muted small">sin pago</span>
-                        <% } %>
-                      </td>
-                      <td class="text-center">
-                        <% if (r.voucher) { %>
-                          <a href="<%= r.voucher %>" target="_blank" class="btn btn-light btn-sm border" title="Ver voucher">
-                            <i class="bi bi-image text-primary"></i>
-                          </a>
-                        <% } else { %>
-                          <span class="text-muted">—</span>
-                        <% } %>
-                      </td>
-                      <td class="text-end">
-                        <div class="d-inline-flex gap-1">
-                          <% if (r.pago_id && r.estado_pago === 'pendiente') { %>
-                            <form method="POST" action="/admin/pagos/<%= r.pago_id %>/confirmar"
-                                  onsubmit="return confirm('¿Confirmar este pago y avisar al cliente por WhatsApp?');">
-                              <button type="submit" class="btn btn-success btn-sm" title="Confirmar y avisar">
-                                <i class="bi bi-whatsapp"></i>
-                              </button>
-                            </form>
-                          <% } %>
-                          <% if (r.estado !== 'cancelado') { %>
-                            <form method="POST" action="/admin/reservas/<%= r.id %>/cancelar"
-                                  onsubmit="return confirm('¿Cancelar esta reserva?');">
-                              <button type="submit" class="btn btn-outline-danger btn-sm" title="Cancelar reserva">
-                                <i class="bi bi-x-lg"></i>
-                              </button>
-                            </form>
-                          <% } %>
-                        </div>
-                      </td>
-                    </tr>
-                  <% }) %>
-                </tbody>
-              </table>
-            </div>
-          </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="kpi-card kpi-info">
+        <div class="kpi-icon"><i class="bi bi-ticket-perforated"></i></div>
+        <div>
+          <div class="kpi-label">Reservas</div>
+          <div class="kpi-value"><%= totalReservas %></div>
+          <div class="kpi-sub">registradas</div>
         </div>
       </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="kpi-card kpi-warning">
+        <div class="kpi-icon"><i class="bi bi-hourglass-split"></i></div>
+        <div>
+          <div class="kpi-label">Pendientes</div>
+          <div class="kpi-value"><%= reservasPendientes %></div>
+          <div class="kpi-sub">sin confirmar</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="kpi-card kpi-success">
+        <div class="kpi-icon"><i class="bi bi-check2-circle"></i></div>
+        <div>
+          <div class="kpi-label">Pagadas</div>
+          <div class="kpi-value"><%= reservasPagadas %></div>
+          <div class="kpi-sub">confirmadas</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="kpi-card kpi-danger">
+        <div class="kpi-icon"><i class="bi bi-x-octagon"></i></div>
+        <div>
+          <div class="kpi-label">Canceladas</div>
+          <div class="kpi-value"><%= reservasCanceladas %></div>
+          <div class="kpi-sub">anuladas</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="kpi-card kpi-gold">
+        <div class="kpi-icon"><i class="bi bi-whatsapp"></i></div>
+        <div>
+          <div class="kpi-label">Por confirmar</div>
+          <div class="kpi-value"><%= pagosPorConfirmar %></div>
+          <div class="kpi-sub">pagos enviados</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      <!-- ===== Viajes ===== -->
-      <div class="tab-pane fade" id="tab-viajes">
-        <div class="card admin-card border-0 shadow-sm">
-          <div class="card-header bg-white border-0 pt-3 pb-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <h5 class="mb-0 fw-bold"><i class="bi bi-bus-front me-2 text-primary"></i>Viajes programados</h5>
+  <ul class="nav nav-pills admin-tabs mb-3" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-reservas" type="button">
+        <i class="bi bi-ticket-perforated me-1"></i>Reservas
+        <span class="badge bg-light text-dark ms-1"><%= totalReservas %></span>
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-viajes" type="button">
+        <i class="bi bi-bus-front me-1"></i>Viajes
+        <span class="badge bg-light text-dark ms-1"><%= totalViajes %></span>
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="tab-reservas">
+      <div class="card admin-card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 pt-3 pb-0">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex gap-2 flex-wrap align-items-center">
+              <span class="fw-semibold text-muted small"><i class="bi bi-funnel me-1"></i>Filtrar:</span>
+              <a href="/admin/dashboard" class="btn btn-sm <%= filtroEstado === '' ? 'btn-dark' : 'btn-outline-secondary' %>">Todas</a>
+              <a href="/admin/dashboard?estado=pendiente" class="btn btn-sm <%= filtroEstado === 'pendiente' ? 'btn-warning text-dark' : 'btn-outline-warning' %>">Pendientes</a>
+              <a href="/admin/dashboard?estado=pagado" class="btn btn-sm <%= filtroEstado === 'pagado' ? 'btn-success' : 'btn-outline-success' %>">Pagadas</a>
+              <a href="/admin/dashboard?estado=cancelado" class="btn btn-sm <%= filtroEstado === 'cancelado' ? 'btn-danger' : 'btn-outline-danger' %>">Canceladas</a>
+            </div>
             <div class="input-group input-group-sm admin-search">
               <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-              <input type="text" id="buscadorViajes" class="form-control border-start-0"
-                     placeholder="Buscar por ruta, fecha o estado...">
-            </div>
-          </div>
-          <div class="card-body p-0">
-            <div class="table-responsive">
-              <table class="table admin-table align-middle mb-0">
-                <thead>
-                  <tr>
-                    <th>Ruta</th>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Estado</th>
-                    <th class="text-end">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody id="tablaViajes">
-                  <% if (viajes.length === 0) { %>
-                    <tr><td colspan="5" class="text-center py-5 text-muted">
-                      <i class="bi bi-calendar-x display-6 d-block mb-2"></i>
-                      Sin viajes registrados.
-                    </td></tr>
-                  <% } %>
-                  <% viajes.forEach(function(v) { %>
-                    <tr>
-                      <td><span class="route-pill"><%= v.origen %> <i class="bi bi-arrow-right mx-1"></i> <%= v.destino %></span></td>
-                      <td><%= new Date(v.fecha).toLocaleDateString('es-PE') %></td>
-                      <td><i class="bi bi-clock me-1 text-muted"></i><%= v.hora %></td>
-                      <td><span class="badge rounded-pill bg-<%= badgeViaje(v.estado) %>"><%= v.estado %></span></td>
-                      <td class="text-end">
-                        <a href="/admin/viajes/<%= v.id %>" class="btn btn-sm btn-primary">
-                          <i class="bi bi-grid-3x3-gap me-1"></i>Asientos
-                        </a>
-                        <a href="/admin/viajes/<%= v.id %>/editar" class="btn btn-sm btn-outline-secondary">
-                          <i class="bi bi-pencil"></i>
-                        </a>
-                      </td>
-                    </tr>
-                  <% }) %>
-                </tbody>
-              </table>
+              <input type="text" id="buscadorReservas" class="form-control border-start-0" placeholder="Buscar reserva...">
             </div>
           </div>
         </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table admin-table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Codigo</th>
+                  <th>Cliente</th>
+                  <th>Contacto</th>
+                  <th>Ruta</th>
+                  <th>Fecha</th>
+                  <th class="text-center">Asientos</th>
+                  <th class="text-end">Monto</th>
+                  <th>Estado</th>
+                  <th>Pago</th>
+                  <th class="text-center">Voucher</th>
+                  <th class="text-end">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tablaReservas">
+                <% if (reservas.length === 0) { %>
+                  <tr>
+                    <td colspan="11" class="text-center py-5 text-muted">
+                      <i class="bi bi-inbox display-6 d-block mb-2"></i>
+                      No hay reservas para este filtro.
+                    </td>
+                  </tr>
+                <% } %>
+                <% reservas.forEach(function(r) { %>
+                  <tr>
+                    <td><code class="text-primary"><%= r.codigo_reserva %></code></td>
+                    <td>
+                      <div class="fw-semibold"><%= r.nombre_cliente %></div>
+                      <div class="text-muted small">DNI <%= r.dni %></div>
+                    </td>
+                    <td>
+                      <a href="https://wa.me/51<%= r.celular %>" target="_blank" class="text-decoration-none text-success">
+                        <i class="bi bi-whatsapp"></i> <%= r.celular %>
+                      </a>
+                    </td>
+                    <td>
+                      <span class="route-pill"><%= r.origen %> <i class="bi bi-arrow-right mx-1"></i> <%= r.destino %></span>
+                    </td>
+                    <td><%= new Date(r.fecha).toLocaleDateString('es-PE') %></td>
+                    <td class="text-center"><span class="seat-chip"><%= r.asiento %></span></td>
+                    <td class="text-end fw-semibold">S/ <%= Number(r.monto_total || 0).toFixed(2) %></td>
+                    <td>
+                      <span class="badge rounded-pill bg-<%= badgeReserva(r.estado) %> <%= textoWarning(r.estado) %>">
+                        <%= r.estado %>
+                      </span>
+                    </td>
+                    <td>
+                      <% if (r.metodo_pago) { %>
+                        <div class="small fw-semibold text-uppercase"><%= r.metodo_pago %></div>
+                        <span class="badge rounded-pill bg-<%= badgePago(r.estado_pago) %> <%= textoWarning(r.estado_pago) %>">
+                          <%= r.estado_pago %>
+                        </span>
+                      <% } else { %>
+                        <span class="text-muted small">sin pago</span>
+                      <% } %>
+                    </td>
+                    <td class="text-center">
+                      <% if (r.voucher) { %>
+                        <button type="button" class="btn btn-outline-primary btn-sm btn-ver-voucher"
+                                data-bs-toggle="modal"
+                                data-bs-target="#voucherModal"
+                                data-voucher="<%= r.voucher %>"
+                                data-title="Voucher <%= r.codigo_reserva %>">
+                          <i class="bi bi-receipt me-1"></i>Ver voucher
+                        </button>
+                      <% } else { %>
+                        <span class="text-muted small">Sin voucher</span>
+                      <% } %>
+                    </td>
+                    <td class="text-end">
+                      <div class="d-inline-flex gap-1">
+                        <% if (r.pago_id && r.estado_pago === 'pendiente') { %>
+                          <form method="POST" action="/admin/pagos/<%= r.pago_id %>/confirmar"
+                                onsubmit="return confirm('Confirmar este pago y preparar WhatsApp para el cliente?');">
+                            <button type="submit" class="btn btn-success btn-sm text-nowrap">
+                              <i class="bi bi-whatsapp me-1"></i>Confirmar pago y enviar WhatsApp
+                            </button>
+                          </form>
+                        <% } %>
+                        <% if (r.estado !== 'cancelado') { %>
+                          <form method="POST" action="/admin/reservas/<%= r.id %>/cancelar"
+                                onsubmit="return confirm('Cancelar esta reserva?');">
+                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Cancelar reserva">
+                              <i class="bi bi-x-lg"></i>
+                            </button>
+                          </form>
+                        <% } %>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
+    </div>
 
+    <div class="tab-pane fade" id="tab-viajes">
+      <div class="card admin-card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 pt-3 pb-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <h5 class="mb-0 fw-bold"><i class="bi bi-bus-front me-2 text-primary"></i>Viajes programados</h5>
+          <div class="input-group input-group-sm admin-search">
+            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+            <input type="text" id="buscadorViajes" class="form-control border-start-0" placeholder="Buscar viaje...">
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table admin-table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Ruta</th>
+                  <th>Fecha</th>
+                  <th>Hora</th>
+                  <th>Estado</th>
+                  <th class="text-end">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tablaViajes">
+                <% if (viajes.length === 0) { %>
+                  <tr>
+                    <td colspan="5" class="text-center py-5 text-muted">
+                      <i class="bi bi-calendar-x display-6 d-block mb-2"></i>
+                      Sin viajes registrados.
+                    </td>
+                  </tr>
+                <% } %>
+                <% viajes.forEach(function(v) { %>
+                  <tr>
+                    <td><span class="route-pill"><%= v.origen %> <i class="bi bi-arrow-right mx-1"></i> <%= v.destino %></span></td>
+                    <td><%= new Date(v.fecha).toLocaleDateString('es-PE') %></td>
+                    <td><i class="bi bi-clock me-1 text-muted"></i><%= v.hora %></td>
+                    <td><span class="badge rounded-pill bg-<%= badgeViaje(v.estado) %>"><%= v.estado %></span></td>
+                    <td class="text-end">
+                      <a href="/admin/viajes/<%= v.id %>" class="btn btn-sm btn-primary">
+                        <i class="bi bi-grid-3x3-gap me-1"></i>Asientos
+                      </a>
+                      <a href="/admin/viajes/<%= v.id %>/editar" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-pencil"></i>
+                      </a>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
+<div class="modal fade" id="voucherModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content admin-modal">
+      <div class="modal-header">
+        <h5 class="modal-title" id="voucherModalTitle">Voucher</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <img id="voucherPreviewImg" class="voucher-preview d-none" alt="Voucher">
+        <iframe id="voucherPreviewPdf" class="voucher-preview-pdf d-none" title="Voucher PDF"></iframe>
+      </div>
+      <div class="modal-footer">
+        <a id="voucherOpen" href="#" target="_blank" class="btn btn-outline-secondary">
+          <i class="bi bi-box-arrow-up-right me-1"></i>Abrir en nueva pestana
+        </a>
+        <a id="voucherDownload" href="#" download class="btn btn-primary">
+          <i class="bi bi-download me-1"></i>Descargar voucher
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
   function filtrar(inputId, tbodyId) {
@@ -330,6 +338,27 @@
   }
   filtrar('buscadorReservas', 'tablaReservas');
   filtrar('buscadorViajes', 'tablaViajes');
+
+  var voucherModal = document.getElementById('voucherModal');
+  if (voucherModal) {
+    voucherModal.addEventListener('show.bs.modal', function(event) {
+      var button = event.relatedTarget;
+      var voucher = button.getAttribute('data-voucher');
+      var title = button.getAttribute('data-title') || 'Voucher';
+      var isPdf = /\.pdf(\?|$)/i.test(voucher);
+      var img = document.getElementById('voucherPreviewImg');
+      var pdf = document.getElementById('voucherPreviewPdf');
+
+      document.getElementById('voucherModalTitle').textContent = title;
+      document.getElementById('voucherOpen').href = voucher;
+      document.getElementById('voucherDownload').href = voucher;
+
+      img.classList.toggle('d-none', isPdf);
+      pdf.classList.toggle('d-none', !isPdf);
+      img.src = isPdf ? '' : voucher;
+      pdf.src = isPdf ? voucher : '';
+    });
+  }
 </script>
 
-<%- include('../partials/footer') %>
+<%- include('../partials/admin-footer') %>

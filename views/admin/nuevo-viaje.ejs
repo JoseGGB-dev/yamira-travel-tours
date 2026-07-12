@@ -1,35 +1,90 @@
-<%- include('../partials/header') %>
+<%- include('../partials/admin-header', { activeNav: 'nuevo-viaje' }) %>
 
-<h1>Crear nuevo viaje</h1>
+<section class="admin-shell">
+  <div class="admin-page-head d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <div>
+      <a href="/admin/dashboard" class="admin-back-link">
+        <i class="bi bi-arrow-left me-1"></i>Volver al panel
+      </a>
+      <h1 class="fw-bold mb-1 mt-2">
+        <i class="bi bi-plus-circle me-2 text-primary"></i>Crear nuevo viaje
+      </h1>
+      <p class="text-muted mb-0 small">Registra una salida programada con ruta, fecha, hora, precio y capacidad.</p>
+    </div>
+  </div>
 
-<% if (error) { %>
-  <p class="mensaje-error"><%= error %></p>
-<% } %>
+  <div class="row justify-content-center">
+    <div class="col-xl-8">
+      <div class="card admin-card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 pt-3">
+          <h5 class="fw-bold mb-0"><i class="bi bi-bus-front me-2 text-primary"></i>Datos del viaje</h5>
+        </div>
+        <div class="card-body">
+          <% if (error) { %>
+            <div class="alert alert-danger">
+              <i class="bi bi-exclamation-triangle me-2"></i><%= error %>
+            </div>
+          <% } %>
 
-<form method="POST" action="/admin/viajes/nuevo">
-  <label>Ruta</label>
-  <select name="ruta_id" required>
-    <option value="">-- Selecciona --</option>
-    <% rutas.forEach(r => { %>
-      <option value="<%= r.id %>"><%= r.origen %> &rarr; <%= r.destino %></option>
-    <% }) %>
-  </select>
+          <form method="POST" action="/admin/viajes/nuevo" class="admin-form" id="formNuevoViaje">
+            <div class="mb-3">
+              <label class="form-label fw-semibold" for="ruta_id">Ruta</label>
+              <select name="ruta_id" id="ruta_id" class="form-select" required>
+                <option value="">Selecciona una ruta</option>
+                <% rutas.forEach(function(r) { %>
+                  <option value="<%= r.id %>" <%= String(formData.ruta_id || '') === String(r.id) ? 'selected' : '' %>>
+                    <%= r.origen %> &rarr; <%= r.destino %>
+                  </option>
+                <% }) %>
+              </select>
+            </div>
 
-  <label>Fecha</label>
-  <input type="date" name="fecha" required>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" for="fecha">Fecha</label>
+                <input type="date" name="fecha" id="fecha" class="form-control" value="<%= formData.fecha || '' %>" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" for="hora">Hora</label>
+                <input type="time" name="hora" id="hora" class="form-control" value="<%= formData.hora || '' %>" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" for="precio">Precio por asiento (S/)</label>
+                <input type="number" name="precio" id="precio" class="form-control" step="0.01" min="0.01" value="<%= formData.precio || '' %>" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" for="capacidad">Capacidad</label>
+                <input type="number" name="capacidad" id="capacidad" class="form-control" min="2" max="60" value="<%= formData.capacidad || 18 %>" required>
+              </div>
+            </div>
 
-  <label>Hora</label>
-  <input type="time" name="hora" required>
+            <div class="d-flex gap-2 flex-wrap justify-content-end mt-4">
+              <a href="/admin/dashboard" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Volver al panel
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-1"></i>Crear viaje
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <label>Precio (S/)</label>
-  <input type="number" name="precio" step="0.01" min="0" required>
+<script>
+  (function() {
+    var form = document.getElementById('formNuevoViaje');
+    if (!form) return;
+    form.addEventListener('submit', function(event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    });
+  })();
+</script>
 
-  <label>Capacidad</label>
-  <input type="number" name="capacidad" value="18" min="1" required>
-
-  <button type="submit" class="boton">Crear viaje</button>
-</form>
-
-<a href="/admin/dashboard">&larr; Volver al panel</a>
-
-<%- include('../partials/footer') %>
+<%- include('../partials/admin-footer') %>
